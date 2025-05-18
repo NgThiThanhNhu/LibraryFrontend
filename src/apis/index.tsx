@@ -1,0 +1,19 @@
+import axios from "axios";
+import { BASE_URL } from "./config";
+import type { PublisherRequest } from "../request/publisherRequest";
+
+const PublisherApi = {
+    addPublisher: async (data: PublisherRequest)=>{
+        const response = await axios.post(`${BASE_URL}/api/Publisher/AddPublisher`, data);
+        return response.data;
+    },
+    getAllPublisher: async ()=>{
+        const response = await axios.get(`${BASE_URL}/api/Publisher/GetAllPublisher`)
+        return response.data;
+    },
+    updatePublisher: async (data: PublisherRequest, id: string)=>{
+        const response = await axios.post(`${BASE_URL}/api/Publisher/UpdatePublisher/${id}`, data)
+        return response.data;
+    }
+}
+export default PublisherApi;
