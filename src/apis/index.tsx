@@ -11,9 +11,13 @@ const PublisherApi = {
         const response = await axios.get(`${BASE_URL}/api/Publisher/GetAllPublisher`)
         return response.data;
     },
-    updatePublisher: async (data: PublisherRequest, id: string)=>{
+    updatePublisher: async (id: string, data: PublisherRequest, )=>{
         const response = await axios.post(`${BASE_URL}/api/Publisher/UpdatePublisher/${id}`, data)
         return response.data;
+    },
+    getPublisherById: async (id: string)=>{
+        const response = await axios.get(`${BASE_URL}/api/Publisher/GetPublisherById/${id}`)
+        return response;
     }
 }
 export default PublisherApi;
