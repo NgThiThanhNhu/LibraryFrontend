@@ -3,7 +3,7 @@ import { DataGrid} from '@mui/x-data-grid';
 import type { GridColDef, GridRowSelectionModel} from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import type { PublisherResponse } from '../response/publisherResponse';
-import { useState } from 'react';
+
 
 type  Props = {
   data : PublisherResponse[],
@@ -30,12 +30,10 @@ const columns: GridColDef[] = [
 
 const paginationModel = { page: 0, pageSize: 5 };
 
-export default function PublisherTable({data, reload}: Props) {
-  const [selectedIds, setSelectedIds] = useState<(string|number)[]>([]);
-  const handleSelectionChange = (ids: (string|number)[]) =>{
-    setSelectedIds(ids);
-    console.log('Các Id đã chọn' , ids);
-  }
+export default function PublisherTable({data, reload
+  }: Props) {
+  
+  
   return (
     <Paper sx={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -46,7 +44,7 @@ export default function PublisherTable({data, reload}: Props) {
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
-        onRowSelectionModelChange = {handleSelectionChange}
+        
         sx={{ border: 0 }}
       />
     </Paper>
