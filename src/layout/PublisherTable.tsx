@@ -35,7 +35,7 @@ export default function PublisherTable({ data, reload, onSelectionChange
 
 
   return (
-    <Paper sx={{ height: 400, width: '100%' }}>
+    <Paper sx={{ height: 450, width: '100%' }}>
       <DataGrid
         rows={data}
         loading={reload}
@@ -49,7 +49,7 @@ export default function PublisherTable({ data, reload, onSelectionChange
           const stringIds = Array.from(selection.ids).map((id) => String(id));
           onSelectionChange(stringIds);
         }}
-        sx={{ border: 0 }}
+        sx={{ border: 0.5 }}
       />
     </Paper>
   );

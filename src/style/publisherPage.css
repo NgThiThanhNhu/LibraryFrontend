@@ -1,0 +1,27 @@
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    /* khoảng cách giữa các nút */
+
+    margin-top: 20px;
+    margin-bottom: 1px;
+}
+
+.button-container>div {
+    display: flex;
+    align-items: center;
+}
+
+.mainBtn {
+    background-color: rgba(2, 137, 255, 0.1);
+    backdrop-filter: blur(2px);
+    border: 1px solid #1976d2;
+    /* màu tương đương primary.main */
+    color: #1976d2;
+    transition: background-color 0.3s ease;
+}
+
+.mainBtn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}

@@ -12,6 +12,8 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import EditIcon from '@mui/icons-material/Edit';
 
+import MainLayout from '../layout/MainLayout';
+import '../style/publisherPage.css'
 
 
 
@@ -202,120 +204,125 @@ export const PublisherPage = () => {
 
 
     return (
-        <div>
-            <div className='AddIcon'>
-                <Button onClick={onClickOpenDialog}>Thêm
-                    <AddIcon />
-                </Button>
-                <Dialog open={openDialog} onClose={() => { setOpenDialog(false) }}>
-                    <DialogTitle sx={{ textAlign: "center" }}>NHẬP THÔNG TIN NHÀ SẢN XUẤT</DialogTitle>
-                    <DialogContent sx={{ p: 3 }}>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                            <Typography sx={{ width: 300 }}>Điền tên nhà xuất bản:</Typography>
-                            <TextField fullWidth placeholder='Nhập tên nhà sản xuất' value={publisher.publisherName} onChange={(e) => newChange("publisherName", e.target.value)}></TextField>
-                        </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                            <Typography sx={{ width: 300 }}>Điền email:</Typography>
-                            <TextField fullWidth placeholder='Nhập email của nhà sản xuất' value={publisher.email} onChange={(e) => newChange("email", e.target.value)}></TextField>
-                        </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                            <Typography sx={{ width: 300 }}>Điền số điện thoại:</Typography>
-                            <TextField fullWidth placeholder='Nhập số điện thoại của nhà sản xuất' value={publisher.phone} onChange={(e) => newChange("phone", e.target.value)}></TextField>
-                        </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                            <Typography sx={{ width: 300 }}>Điền địa chỉ:</Typography>
-                            <TextField fullWidth placeholder='Nhập địa chỉ liên hệ' value={publisher.address} onChange={(e) => newChange("address", e.target.value)}></TextField>
-                        </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
-                            <Button color="primary" onClick={onhandleAddingBtn}>Lưu</Button>
-                            <Button color='error' onClick={onClickCloseDialog}>Hủy</Button>
-                        </Box>
-                    </DialogContent>
-                </Dialog>
+        <MainLayout>
+            <div>
+                <div className='button-container'>
+                    <div className='AddIcon'>
+                        <Button className='mainBtn' variant="outlined" onClick={onClickOpenDialog}>Thêm
+                            <AddIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                        </Button>
+                        <Dialog open={openDialog} onClose={() => { setOpenDialog(false) }}>
+                            <DialogTitle sx={{ textAlign: "center" }}>NHẬP THÔNG TIN NHÀ SẢN XUẤT</DialogTitle>
+                            <DialogContent sx={{ p: 3 }}>
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                    <Typography sx={{ width: 300 }}>Điền tên nhà xuất bản:</Typography>
+                                    <TextField fullWidth placeholder='Nhập tên nhà sản xuất' value={publisher.publisherName} onChange={(e) => newChange("publisherName", e.target.value)}></TextField>
+                                </Box>
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                    <Typography sx={{ width: 300 }}>Điền email:</Typography>
+                                    <TextField fullWidth placeholder='Nhập email của nhà sản xuất' value={publisher.email} onChange={(e) => newChange("email", e.target.value)}></TextField>
+                                </Box>
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                    <Typography sx={{ width: 300 }}>Điền số điện thoại:</Typography>
+                                    <TextField fullWidth placeholder='Nhập số điện thoại của nhà sản xuất' value={publisher.phone} onChange={(e) => newChange("phone", e.target.value)}></TextField>
+                                </Box>
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                    <Typography sx={{ width: 300 }}>Điền địa chỉ:</Typography>
+                                    <TextField fullWidth placeholder='Nhập địa chỉ liên hệ' value={publisher.address} onChange={(e) => newChange("address", e.target.value)}></TextField>
+                                </Box>
+                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
+                                    <Button color="primary" onClick={onhandleAddingBtn}>Lưu</Button>
+                                    <Button color='error' onClick={onClickCloseDialog}>Hủy</Button>
+                                </Box>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                    <div className='SearchIcon'>
+                        <Button className='mainBtn' variant="outlined" onClick={() => {
+                            onOpenLogGetById();
+                            onCloseBox();
+                        }} > Tìm kiếm
+                            <SearchIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                        </Button>
+                        <Dialog open={logGetById} onClose={() => { setLogGetById(false) }}>
+                            <DialogTitle sx={{ textAlign: "center" }}>TÌM THÔNG TIN NHÀ SẢN XUẤT</DialogTitle>
+                            <DialogContent sx={{ p: 3 }}>
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                    <Typography sx={{ width: 200 }}>Điền Id: </Typography>
+                                    <TextField fullWidth placeholder='Nhập Id của nhà sản xuất' value={publisherId} onChange={(e) => { setPublisherId(e.target.value) }}></TextField>
+                                </Box>
+                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
+                                    <Button color="primary" onClick={onClickGetPublisherById}>Tìm</Button>
+                                    <Button color='error' onClick={onCloseLogGetById}>Thoát</Button>
+                                </Box>
+                                <Box >
+                                    {box && (
+                                        publisherGetById && (
+                                            <div style={{ marginTop: 20 }}>
+                                                <TextField label="Tên nhà xuất bản" value={publisherGetById.publisherName} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Email" value={publisherGetById.email} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Số điện thoại" value={publisherGetById.phone} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Địa chỉ" value={publisherGetById.address} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                            </div>
+                                        )
+                                    )
+                                    }
+                                </Box>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                    <div className='deleteIcon'>
+                        <Button className='mainBtn' variant="outlined" onClick={onClickOpenDialogDelete}>Xóa
+                            <DeleteIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                        </Button>
+                        <Dialog open={logDelete} onClose={() => { setlogDelete(false) }}>
+                            <DialogTitle sx={{ textAlign: "center" }}>Bạn có chắc chắn xóa không?</DialogTitle>
+                            <DialogContent sx={{ p: 3 }}>
+                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
+                                    <Button color="primary" onClick={onHandleBtnDelete}>Có</Button>
+                                    <Button color='error' onClick={onClickCloseDialogDelete}>Hủy</Button>
+                                </Box>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                    <div className='updateIcon'>
+                        <Button className='mainBtn' variant="outlined" onClick={onClickOpenLogUpdate}>Cập nhật
+                            <EditIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                        </Button>
+                        <Dialog open={logUpdate} onClose={() => { setLogUpdate(false) }}>
+                            <DialogTitle sx={{ textAlign: "center" }}>Cập nhật thông tin nhà xuất bản</DialogTitle>
+                            <DialogContent>
+                                <DialogContent sx={{ p: 3 }}>
+                                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                        <Typography sx={{ width: 300 }}>Điền tên nhà xuất bản:</Typography>
+                                        <TextField fullWidth placeholder='Nhập tên nhà sản xuất' value={publisherUpdate.publisherName} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, publisherName: e.target.value })}></TextField>
+                                    </Box>
+                                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                        <Typography sx={{ width: 300 }}>Điền email:</Typography>
+                                        <TextField fullWidth placeholder='Nhập email của nhà sản xuất' value={publisherUpdate.email} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, email: e.target.value })}></TextField>
+                                    </Box>
+                                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                        <Typography sx={{ width: 300 }}>Điền số điện thoại:</Typography>
+                                        <TextField fullWidth placeholder='Nhập số điện thoại của nhà sản xuất' value={publisherUpdate.phone} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, phone: e.target.value })}></TextField>
+                                    </Box>
+                                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                                        <Typography sx={{ width: 300 }}>Điền địa chỉ:</Typography>
+                                        <TextField fullWidth placeholder='Nhập địa chỉ liên hệ' value={publisherUpdate.address} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, address: e.target.value })}></TextField>
+                                    </Box>
+                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
+                                        <Button color="primary" onClick={onHandleUpdateBtn}>Lưu</Button>
+                                        <Button color='error' onClick={onClickCloseLogUpdate}>Hủy</Button>
+                                    </Box>
+                                </DialogContent>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                </div>
+                <div className='DataTable'>
+                    <PublisherTable data={getAllPublisher} reload={reload} onSelectionChange={setSelectedPublisherIds} />
+                </div>
             </div>
-            <div className='SearchIcon'>
-                <Button onClick={() => {
-                    onOpenLogGetById();
-                    onCloseBox();
-                }} > Tìm kiếm
-                    <SearchIcon />
-                </Button>
-                <Dialog open={logGetById} onClose={() => { setLogGetById(false) }}>
-                    <DialogTitle sx={{ textAlign: "center" }}>TÌM THÔNG TIN NHÀ SẢN XUẤT</DialogTitle>
-                    <DialogContent sx={{ p: 3 }}>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                            <Typography sx={{ width: 200 }}>Điền Id: </Typography>
-                            <TextField fullWidth placeholder='Nhập Id của nhà sản xuất' value={publisherId} onChange={(e) => { setPublisherId(e.target.value) }}></TextField>
-                        </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
-                            <Button color="primary" onClick={onClickGetPublisherById}>Tìm</Button>
-                            <Button color='error' onClick={onCloseLogGetById}>Thoát</Button>
-                        </Box>
-                        <Box >
-                            {box && (
-                                publisherGetById && (
-                                    <div style={{ marginTop: 20 }}>
-                                        <TextField label="Tên nhà xuất bản" value={publisherGetById.publisherName} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                        <TextField label="Email" value={publisherGetById.email} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                        <TextField label="Số điện thoại" value={publisherGetById.phone} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                        <TextField label="Địa chỉ" value={publisherGetById.address} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                    </div>
-                                )
-                            )
-                            }
-                        </Box>
-                    </DialogContent>
-                </Dialog>
-            </div>
-            <div className='deleteIcon'>
-                <Button onClick={onClickOpenDialogDelete}>Xóa
-                    <DeleteIcon />
-                </Button>
-                <Dialog open={logDelete} onClose={() => { setlogDelete(false) }}>
-                    <DialogTitle sx={{ textAlign: "center" }}>Bạn có chắc chắn xóa không?</DialogTitle>
-                    <DialogContent sx={{ p: 3 }}>
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
-                            <Button color="primary" onClick={onHandleBtnDelete}>Có</Button>
-                            <Button color='error' onClick={onClickCloseDialogDelete}>Hủy</Button>
-                        </Box>
-                    </DialogContent>
-                </Dialog>
-            </div>
-            <div className='updateIcon'>
-                <Button onClick={onClickOpenLogUpdate}>Cập nhật
-                    <EditIcon />
-                </Button>
-                <Dialog open={logUpdate} onClose={() => { setLogUpdate(false) }}>
-                    <DialogTitle sx={{ textAlign: "center" }}>Cập nhật thông tin nhà xuất bản</DialogTitle>
-                    <DialogContent>
-                        <DialogContent sx={{ p: 3 }}>
-                            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                <Typography sx={{ width: 300 }}>Điền tên nhà xuất bản:</Typography>
-                                <TextField fullWidth placeholder='Nhập tên nhà sản xuất' value={publisherUpdate.publisherName} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, publisherName: e.target.value })}></TextField>
-                            </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                <Typography sx={{ width: 300 }}>Điền email:</Typography>
-                                <TextField fullWidth placeholder='Nhập email của nhà sản xuất' value={publisherUpdate.email} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, email: e.target.value })}></TextField>
-                            </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                <Typography sx={{ width: 300 }}>Điền số điện thoại:</Typography>
-                                <TextField fullWidth placeholder='Nhập số điện thoại của nhà sản xuất' value={publisherUpdate.phone} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, phone: e.target.value })}></TextField>
-                            </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                <Typography sx={{ width: 300 }}>Điền địa chỉ:</Typography>
-                                <TextField fullWidth placeholder='Nhập địa chỉ liên hệ' value={publisherUpdate.address} onChange={(e) => setPublisherUpdate({ ...publisherUpdate, address: e.target.value })}></TextField>
-                            </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
-                                <Button color="primary" onClick={onHandleUpdateBtn}>Lưu</Button>
-                                <Button color='error' onClick={onClickCloseLogUpdate}>Hủy</Button>
-                            </Box>
-                        </DialogContent>
-                    </DialogContent>
-                </Dialog>
-            </div>
-            <div className='DataTable'>
-                <PublisherTable data={getAllPublisher} reload={reload} onSelectionChange={setSelectedPublisherIds} />
-            </div>
-        </div>
+        </MainLayout>
+
     )
 }
