@@ -6,10 +6,11 @@ import { PublisherPage } from "./pages/PublisherPage";
 
 function App() {
   return (
+
     <Router>
       <Routes>
         <Route path="/todo" element={<TodoPage />} />
-        <Route path="/publisher" element={<PublisherPage/>} />
+        <Route path="/publisher" element={<PublisherPage />} />
       </Routes>
     </Router>
   );

@@ -9,7 +9,7 @@ type Props = {
 
 const MainLayout: React.FC<Props> = ({ children }) => {
     return (
-        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <div >
             <Header />
             <div style={{ display: "flex", flex: 1 }}>
                 <Sidebar />

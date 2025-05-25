@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import '../css/tailwind.css'
 import App from './App.tsx'
 //import front roboto
 import '@fontsource/roboto/300.css';

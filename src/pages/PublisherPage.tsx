@@ -13,7 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 
 import MainLayout from '../layout/MainLayout';
-import '../style/publisherPage.css'
+
 
 
 
@@ -206,9 +206,9 @@ export const PublisherPage = () => {
     return (
         <MainLayout>
             <div>
-                <div className='button-container'>
-                    <div className='AddIcon'>
-                        <Button className='mainBtn' variant="outlined" onClick={onClickOpenDialog}>Thêm
+                <div className='flex flex-row gap-4'>
+                    <div>
+                        <Button className="w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={onClickOpenDialog}>Thêm
                             <AddIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={openDialog} onClose={() => { setOpenDialog(false) }}>
@@ -238,7 +238,7 @@ export const PublisherPage = () => {
                         </Dialog>
                     </div>
                     <div className='SearchIcon'>
-                        <Button className='mainBtn' variant="outlined" onClick={() => {
+                        <Button className="w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={() => {
                             onOpenLogGetById();
                             onCloseBox();
                         }} > Tìm kiếm
@@ -272,7 +272,7 @@ export const PublisherPage = () => {
                         </Dialog>
                     </div>
                     <div className='deleteIcon'>
-                        <Button className='mainBtn' variant="outlined" onClick={onClickOpenDialogDelete}>Xóa
+                        <Button className="w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={onClickOpenDialogDelete}>Xóa
                             <DeleteIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={logDelete} onClose={() => { setlogDelete(false) }}>
@@ -286,7 +286,7 @@ export const PublisherPage = () => {
                         </Dialog>
                     </div>
                     <div className='updateIcon'>
-                        <Button className='mainBtn' variant="outlined" onClick={onClickOpenLogUpdate}>Cập nhật
+                        <Button className=" w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={onClickOpenLogUpdate}>Cập nhật
                             <EditIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={logUpdate} onClose={() => { setLogUpdate(false) }}>

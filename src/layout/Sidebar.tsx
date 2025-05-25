@@ -2,7 +2,7 @@
 
 const Sidebar = () => {
     return (
-        <div style={{ width: "250px", backgroundColor: "f5f5f5", padding: "20px" }}>
+        <div >
             <h3>Quản lý</h3>
             <ul style={{ listStyle: "none", padding: 0 }}>
                 <li><a href="/publishers">Nhà xuất bản</a></li>
