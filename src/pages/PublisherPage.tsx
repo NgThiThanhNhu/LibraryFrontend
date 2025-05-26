@@ -208,8 +208,11 @@ export const PublisherPage = () => {
             <div>
                 <div className='flex flex-row gap-4'>
                     <div>
-                        <Button className="w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={onClickOpenDialog}>Thêm
-                            <AddIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                        <Button className="group flex items-center space-x-1 hover:bg-gray-100 " variant="text" onClick={onClickOpenDialog}>
+                            <span className="text-gray-700 group-hover:text-blue-500 transition">
+                                Thêm
+                            </span>
+                            <AddIcon className="text-gray-700 group-hover:text-blue-500 transition" fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={openDialog} onClose={() => { setOpenDialog(false) }}>
                             <DialogTitle sx={{ textAlign: "center" }}>NHẬP THÔNG TIN NHÀ SẢN XUẤT</DialogTitle>
@@ -237,12 +240,12 @@ export const PublisherPage = () => {
                             </DialogContent>
                         </Dialog>
                     </div>
-                    <div className='SearchIcon'>
-                        <Button className="w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={() => {
+                    <div>
+                        <Button className="group flex items-center space-x-1 hover:bg-gray-100 " variant="text" onClick={() => {
                             onOpenLogGetById();
                             onCloseBox();
-                        }} > Tìm kiếm
-                            <SearchIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                        }} > <span className="text-gray-700 group-hover:text-blue-500 transition">Tìm kiếm </span>
+                            <SearchIcon className="text-gray-700 group-hover:text-blue-500 transition" fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={logGetById} onClose={() => { setLogGetById(false) }}>
                             <DialogTitle sx={{ textAlign: "center" }}>TÌM THÔNG TIN NHÀ SẢN XUẤT</DialogTitle>
@@ -271,9 +274,12 @@ export const PublisherPage = () => {
                             </DialogContent>
                         </Dialog>
                     </div>
-                    <div className='deleteIcon'>
-                        <Button className="w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={onClickOpenDialogDelete}>Xóa
-                            <DeleteIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                    <div >
+                        <Button className="group flex items-center space-x-1 hover:bg-gray-100 " variant="text" onClick={onClickOpenDialogDelete}>
+                            <span className="text-gray-700 group-hover:text-blue-500 transition">
+                                Xóa
+                            </span>
+                            <DeleteIcon className="text-gray-700 group-hover:text-blue-500 transition" fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={logDelete} onClose={() => { setlogDelete(false) }}>
                             <DialogTitle sx={{ textAlign: "center" }}>Bạn có chắc chắn xóa không?</DialogTitle>
@@ -285,9 +291,12 @@ export const PublisherPage = () => {
                             </DialogContent>
                         </Dialog>
                     </div>
-                    <div className='updateIcon'>
-                        <Button className=" w-29 hover:bg-blue-100 px-4 py-2 rounded transition duration-300 ease-in-out" variant="outlined" onClick={onClickOpenLogUpdate}>Cập nhật
-                            <EditIcon fontSize='small' sx={{ marginLeft: 0.22 }} />
+                    <div>
+                        <Button className="group flex items-center space-x-1 hover:bg-gray-100 " variant="text" onClick={onClickOpenLogUpdate}>
+                            <span className="text-gray-700 group-hover:text-blue-500 transition">
+                                Cập nhật
+                            </span>
+                            <EditIcon className="text-gray-700 group-hover:text-blue-500 transition" fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={logUpdate} onClose={() => { setLogUpdate(false) }}>
                             <DialogTitle sx={{ textAlign: "center" }}>Cập nhật thông tin nhà xuất bản</DialogTitle>
