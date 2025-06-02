@@ -14,13 +14,18 @@ export const AuthenticationPage = () => {
     }
 
     const [login, setLogin] = useState<LoginRequest>(() => initialLogin)
+    const [usernameError, setUsernameError] = useState<string>("")
+    const [passwordError, setPasswordError] = useState<string>("")
     const navigate = useNavigate();
 
     const onhandleLogin = async () => {
         try {
-            if (!login?.username.trim() || !login?.password.trim()) {
-                alert("username không được để trống!");
-                return;
+            if (!login.username.trim()) {
+                alert('email không được để trống!')
+                return
+            } else if (!login.password.trim()) {
+                alert('password không được để trống!')
+                return
             }
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(login.username)) {
@@ -29,8 +34,14 @@ export const AuthenticationPage = () => {
             }
             const response = await Authetication.login(login);
             console.log(response)
+            if (!response.isSuccess && response.message.includes("tài khoản")) {
+                setUsernameError("Tài khoản không tồn tại")
+                return
+            } else if (!response.isSuccess && response.message.includes("Mật khẩu")) {
+                setPasswordError("Mật khẩu không đúng")
+                return
+            }
             navigate('/publisher')
-
         } catch (error) {
             alert('Đăng nhập thất bại!' + error);
             console.log(error)
@@ -69,6 +80,8 @@ export const AuthenticationPage = () => {
                             placeholder="Email Address"
                             value={login.username}
                             onChange={(e) => setLogin({ ...login, username: e.target.value })}
+                            error={!!usernameError}
+                            helperText={usernameError}
                         />
                     </Box>
 
@@ -80,6 +93,8 @@ export const AuthenticationPage = () => {
                             placeholder="Password"
                             value={login.password}
                             onChange={(e) => setLogin({ ...login, password: e.target.value })}
+                            error={!!passwordError}
+                            helperText={passwordError}
                         />
                     </Box>
 
