@@ -6,6 +6,9 @@ import { AuthenticationPage } from "./pages/AuthenticationPage";
 import { AuthorPage } from "./pages/AuthorPage";
 import { BookCategoryPage } from "./pages/BookCategoryPage";
 import { BookChapterPage } from "./pages/BookChapterPage";
+import { FloorPage } from "./pages/warehouse/FloorPage";
+import { RoomPage } from "./pages/warehouse/RoomPage";
+
 
 
 function App() {
@@ -19,6 +22,8 @@ function App() {
         <Route path="/author" element={<AuthorPage />} />
         <Route path="/bookcategory" element={<BookCategoryPage />} />
         <Route path="/bookchapter" element={<BookChapterPage />} />
+        <Route path="/warehouse/floor" element={<FloorPage />} />
+        <Route path="/warehouse/room" element={<RoomPage />} />
       </Routes>
     </Router>
   );

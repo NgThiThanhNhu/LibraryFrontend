@@ -3,17 +3,18 @@ import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 
-import type { AuthorResponse } from '../response/AuthorResponse';
+
+import type { FloorResponse } from '../../response/Warehouse/FloorResponse';
 
 
 type Props = {
-    data: AuthorResponse[],
+    data: FloorResponse[],
     reload: boolean,
     onSelectionChange: (selectionIds: string[]) => void
 }
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'name', headerName: 'Tên tác giả', flex: 1 },
+    { field: 'floorName', headerName: 'Tên tác giả', flex: 1 },
 
 ];
 

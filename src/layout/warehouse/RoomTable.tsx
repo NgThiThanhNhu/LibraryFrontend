@@ -2,25 +2,25 @@
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-
-import type { AuthorResponse } from '../response/AuthorResponse';
+import type { RoomResponse } from '../../response/Warehouse/RoomResponse';
 
 
 type Props = {
-    data: AuthorResponse[],
+    data: RoomResponse[],
     reload: boolean,
     onSelectionChange: (selectionIds: string[]) => void
 }
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'name', headerName: 'Tên tác giả', flex: 1 },
+    { field: 'roomName', headerName: 'Số phòng', flex: 1 },
+    { field: 'floorName', headerName: 'Số tầng', flex: 1 },
 
 ];
 
 
 const paginationModel = { page: 0, pageSize: 5 };
 
-export default function AuthorTable({ data, reload, onSelectionChange
+export default function RoomTable({ data, reload, onSelectionChange
 }: Props) {
 
 

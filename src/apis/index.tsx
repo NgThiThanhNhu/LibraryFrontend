@@ -5,6 +5,8 @@ import type { LoginRequest } from "../request/LoginRequest";
 import type { AuthorRequest } from "../request/AuthorRequest";
 import type { BookCategoryRequest } from "../request/BookCategoryRequest";
 import type { BookChapterRequest } from "../request/BookChapterRequest";
+import type { FloorRequest } from "../request/Warehouse/FloorRequest";
+import type { RoomRequest } from "../request/Warehouse/RoomRequest";
 
 const axiosConfig = axiosClient();
 
@@ -96,6 +98,52 @@ export const BookChapterApi = {
     },
     deleteBookChapter: async (id: string) => {
         const response = await axiosConfig.post(`/api/BookChapter/DeleteBookChapter/${id}`)
+        return response;
+    }
+}
+
+export const FloorWarehouseApi = {
+    addFloor: async (data: FloorRequest) => {
+        const response = await axiosConfig.post(`/api/Floor/AddFloor`, data);
+        return response.data;
+    },
+    getAllFloor: async () => {
+        const response = await axiosConfig.get(`/api/Floor/GetAllFloor`)
+        return response.data;
+    },
+    updateFloor: async (id: string, data: FloorRequest) => {
+        const response = await axiosConfig.post(`/api/Floor/UpdateFloor/${id}`, data)
+        return response.data;
+    },
+    getFloorById: async (id: string) => {
+        const response = await axiosConfig.get(`/api/Floor/GetFloorById/${id}`)
+        return response;
+    },
+    deleteFloor: async (id: string) => {
+        const response = await axiosConfig.post(`/api/Floor/DeleteFloor/${id}`)
+        return response;
+    }
+}
+
+export const RoomWarehouseApi = {
+    addRoom: async (data: RoomRequest) => {
+        const response = await axiosConfig.post(`/api/Room/AddRoom`, data);
+        return response.data;
+    },
+    getAllRoom: async () => {
+        const response = await axiosConfig.get(`/api/Room/GetAllRoom`)
+        return response.data;
+    },
+    updateRoom: async (id: string, data: RoomRequest) => {
+        const response = await axiosConfig.post(`/api/Room/UpdateRoom/${id}`, data)
+        return response.data;
+    },
+    getRoomById: async (id: string) => {
+        const response = await axiosConfig.get(`/api/Room/GetRoomById/${id}`)
+        return response;
+    },
+    deleteRoom: async (id: string) => {
+        const response = await axiosConfig.post(`/api/Room/DeleteRoom/${id}`)
         return response;
     }
 }
