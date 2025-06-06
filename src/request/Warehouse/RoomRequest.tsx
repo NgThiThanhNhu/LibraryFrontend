@@ -1,4 +1,5 @@
 export interface RoomRequest {
     roomName: string,
-    floorId: string
+    maxBookShelfCapity: number | null,
+    floorId: string,
 }

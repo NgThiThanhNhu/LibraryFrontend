@@ -1,156 +1,170 @@
-import { Button } from "@mui/material";
+import { useState } from "react";
 import { FaCog, FaHome, FaUsers } from "react-icons/fa";
 import { FaBook } from "react-icons/fa6";
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import WarehouseIcon from '@mui/icons-material/Warehouse';
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 interface Props {
-    isOpen: boolean,
-
+    isOpen: boolean;
 }
+
 export default function Sidebar({ isOpen }: Props) {
+    const [isBooksOpen, setIsBooksOpen] = useState(false);
+    const [isStatusOpen, setIsStatusOpen] = useState(false);
+    const [isWarehouseOpen, setIsWarehouseOpen] = useState(false);
+    const [isStorageAreaOpen, setIsStorageAreaOpen] = useState(false);
+    const [isBookStatusOpen, setIsBookStatusOpen] = useState(false);
 
     return (
-        <>
-            <div className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} `}>
-                <div className="p-4 text-lg font-bold">My Library</div>
-                <ul className="space-y-2 p-4 text-base">
-                    <li>
-                        <a href="#" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-                            <FaHome className="text-lg" />
-                            Dashboard
-                        </a>
-                    </li>
+        <div
+            className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
+        >
+            <div className="p-4 text-lg font-bold">My Library</div>
+            <ul className="space-y-2 p-4 text-base">
+                <li>
+                    <a href="/" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                        <FaHome className="text-lg" />
+                        Dashboard
+                    </a>
+                </li>
 
-                    <li className="group relative">
-                        <div className="flex items-center justify-between hover:bg-gray-700 p-2 rounded cursor-pointer">
-                            <span className="flex items-center gap-2">
-                                <FaBook className="text-lg" />
-                                Books
-                            </span>
-
-                        </div>
-
-                        <ul className="hidden group-hover:block mt-1 ml-4 space-y-1 text-sm">
+                {/* Books */}
+                <li>
+                    <div
+                        onClick={() => setIsBooksOpen(!isBooksOpen)}
+                        className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded cursor-pointer"
+                    >
+                        <FaBook className="text-lg" />
+                        Books
+                    </div>
+                    {isBooksOpen && (
+                        <ul className="mt-1 ml-4 space-y-1 text-sm">
                             <li>
-                                <a href="/bookcategory" className="flex items-center gap-2 px-4 py-1 hover:text-blue-400">
-
-                                    Loại sách
-                                </a>
+                                <a href="/bookcategory" className="block px-4 py-1 hover:text-blue-400">Loại sách</a>
                             </li>
                             <li>
                                 <a href="/bookchapter" className="block px-4 py-1 hover:text-blue-400">Số tập</a>
                             </li>
                             <li>
-                                <a href="#" className="block px-4 py-1 hover:text-blue-400">Từng cuốn sách</a>
+                                <a href="/bookitem" className="block px-4 py-1 hover:text-blue-400">Từng cuốn sách</a>
                             </li>
                         </ul>
-                    </li>
+                    )}
+                </li>
 
-                    <li>
-                        <a href="/author" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-                            <FaUsers className="text-lg" />
-                            Book Authors
-                        </a>
-                    </li>
+                {/* Authors */}
+                <li>
+                    <a href="/author" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                        <FaUsers className="text-lg" />
+                        Book Authors
+                    </a>
+                </li>
 
-                    <li>
-                        <a href="/publisher" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-                            <FaUsers className="text-lg" />
-                            Publishers
-                        </a>
-                    </li>
+                {/* Publishers */}
+                <li>
+                    <a href="/publisher" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                        <FaUsers className="text-lg" />
+                        Publishers
+                    </a>
+                </li>
 
-                    <li className="relative group">
-                        {/* Mục chính */}
-                        <div className="flex items-center justify-between hover:bg-gray-700 p-2 rounded cursor-pointer">
-                            <span className="flex items-center gap-2">
-                                <AutorenewIcon className="text-lg" />
-                                Quản lý trạng thái
-                            </span>
-                        </div>
+                {/* Trạng thái */}
+                <li>
+                    <div
+                        onClick={() => setIsStatusOpen(!isStatusOpen)}
+                        className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded cursor-pointer"
+                    >
+                        <AutorenewIcon className="text-lg" />
+                        Quản lý trạng thái
+                    </div>
 
-                        <ul className="hidden group-hover:block mt-1 ml-4 space-y-1 text-sm">
-
-                            <li className="relative group/item">
-                                <div className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer">
+                    {isStatusOpen && (
+                        <ul className="mt-1 ml-4 space-y-1 text-sm">
+                            <li>
+                                <div
+                                    onClick={() => setIsStorageAreaOpen(!isStorageAreaOpen)}
+                                    className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer"
+                                >
                                     <AutorenewIcon className="text-lg" />
                                     Trạng thái của kho sách
                                 </div>
-
-
-                                <ul className="hidden group-hover/item:block mt-1 ml-4 space-y-1 text-sm">
-                                    <li>
-                                        <a href="/bookcategory" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a>
-                                    </li>
-                                    <li>
-                                        <a href="/bookchapter" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a>
-                                    </li>
-                                </ul>
+                                {isStorageAreaOpen && (
+                                    <ul className="mt-1 ml-4 space-y-1">
+                                        <li><a href="/book-import" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a></li>
+                                        <li><a href="/book-export" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a></li>
+                                    </ul>
+                                )}
                             </li>
 
-
-                            <li className="relative group/item2">
-                                <div className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer">
+                            <li>
+                                <div
+                                    onClick={() => setIsBookStatusOpen(!isBookStatusOpen)}
+                                    className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer"
+                                >
                                     <AutorenewIcon className="text-lg" />
                                     Trạng thái sách
                                 </div>
-
-
-                                <ul className="hidden group-hover/item2:block  mt-1 ml-4 space-y-1 text-sm">
-                                    <li>
-                                        <a href="#" className="block px-4 py-1 hover:text-blue-400">Mượn - Trả - Đặt trước</a>
-                                    </li>
-                                </ul>
+                                {isBookStatusOpen && (
+                                    <ul className="mt-1 ml-4 space-y-1">
+                                        <li><a href="/book-status" className="block px-4 py-1 hover:text-blue-400">Mượn - Trả - Đặt trước</a></li>
+                                    </ul>
+                                )}
                             </li>
                         </ul>
-                    </li>
+                    )}
+                </li>
 
-                    <li className="group relative">
-                        <div className="flex items-center justify-between hover:bg-gray-700 p-2 rounded cursor-pointer">
-                            <span className="flex items-center gap-2">
-                                <WarehouseIcon className="text-lg" />
-                                Kho Sách
-                            </span>
-
-                        </div>
-
-                        <ul className="hidden group-hover:block mt-1 ml-4 space-y-1 text-sm">
+                {/* Kho sách */}
+                <li>
+                    <div
+                        onClick={() => setIsWarehouseOpen(!isWarehouseOpen)}
+                        className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded cursor-pointer"
+                    >
+                        <WarehouseIcon className="text-lg" />
+                        Kho sách
+                    </div>
+                    {isWarehouseOpen && (
+                        <ul className="mt-1 ml-4 space-y-1 text-sm">
                             <li>
-                                <a href="#" className="flex items-center gap-2 px-4 py-1 hover:text-blue-400">
-
+                                <div
+                                    onClick={() => setIsStorageAreaOpen(!isStorageAreaOpen)}
+                                    className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer"
+                                >
+                                    <LocationOnIcon className="text-lg" />
                                     Quản lý khu vực lưu trữ
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="block px-4 py-1 hover:text-blue-400">Số tập</a>
-                            </li>
-                            <li>
-                                <a href="#" className="block px-4 py-1 hover:text-blue-400">Từng cuốn sách</a>
+                                </div>
+                                {isStorageAreaOpen && (
+                                    <ul className="mt-1 ml-4 space-y-1">
+                                        <li><a href="/warehouse/floor" className="block px-4 py-1 hover:text-blue-400">Tầng</a></li>
+                                        <li><a href="/warehouse/room" className="block px-4 py-1 hover:text-blue-400">Phòng</a></li>
+                                        <li><a href="/warehouse/bookshelf" className="block px-4 py-1 hover:text-blue-400">Tủ sách</a></li>
+                                        <li><a href="/warehouse/rack" className="block px-4 py-1 hover:text-blue-400">Kệ sách</a></li>
+                                        <li><a href="/warehouse/slot" className="block px-4 py-1 hover:text-blue-400">Ô sách</a></li>
+                                    </ul>
+                                )}
                             </li>
                         </ul>
-                    </li>
+                    )}
+                </li>
 
-                    <li>
-                        <a href="#" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-                            <FaUsers className="text-lg" />
-                            Users
-                        </a>
-                    </li>
+                {/* Users */}
+                <li>
+                    <a href="/users" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                        <FaUsers className="text-lg" />
+                        Users
+                    </a>
+                </li>
 
-                    <li>
-                        <a href="#" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-                            <FaCog className="text-lg" />
-                            Settings
-                        </a>
-                    </li>
-                </ul>
-
-            </div>
-        </>
+                {/* Settings */}
+                <li>
+                    <a href="/settings" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                        <FaCog className="text-lg" />
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
     );
 }
-
-
-

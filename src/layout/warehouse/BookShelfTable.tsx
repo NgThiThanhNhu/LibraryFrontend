@@ -2,27 +2,27 @@
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import type { RoomResponse } from '../../response/Warehouse/RoomResponse';
+
+import type { BookShelfResponse } from '../../response/Warehouse/BookShelfResponse';
 
 
 type Props = {
-    data: RoomResponse[],
+    data: BookShelfResponse[],
     reload: boolean,
     onSelectionChange: (selectionIds: string[]) => void
 }
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'roomName', headerName: 'Số phòng', flex: 1 },
-    { field: 'roomId', headerName: 'ID phòng', flex: 1 },
-    { field: 'maxBookShelfCapity', headerName: 'Sức chứa tối đa của phòng', flex: 1 },
-    { field: 'currentBookShelves', headerName: 'Số tủ sách hiện có của phòng', flex: 1 },
-    { field: 'isFull', headerName: 'Trạng thái của phòng', flex: 1 },
+    { field: 'bookShelfName', headerName: 'Tên tủ sách', flex: 1 },
+    { field: 'numberOfShelves', headerName: 'Số kệ sách', flex: 1 },
+    { field: 'roomName', headerName: 'Tên phòng', flex: 1 },
+
 ];
 
 
 const paginationModel = { page: 0, pageSize: 5 };
 
-export default function RoomTable({ data, reload, onSelectionChange
+export default function BookShelfTable({ data, reload, onSelectionChange
 }: Props) {
 
 

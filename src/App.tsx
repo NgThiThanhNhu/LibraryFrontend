@@ -8,6 +8,7 @@ import { BookCategoryPage } from "./pages/BookCategoryPage";
 import { BookChapterPage } from "./pages/BookChapterPage";
 import { FloorPage } from "./pages/warehouse/FloorPage";
 import { RoomPage } from "./pages/warehouse/RoomPage";
+import { BookShelfPage } from "./pages/warehouse/BookShelfPage";
 
 
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/bookchapter" element={<BookChapterPage />} />
         <Route path="/warehouse/floor" element={<FloorPage />} />
         <Route path="/warehouse/room" element={<RoomPage />} />
+        <Route path="/warehouse/bookshelf" element={<BookShelfPage />} />
       </Routes>
     </Router>
   );

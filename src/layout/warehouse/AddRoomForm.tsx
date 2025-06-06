@@ -23,6 +23,10 @@ export default function AddRoomForm({ dialogAdd, onCloseDialog, room, onNewChang
                         <Typography className="text-sm font-medium text-gray-700 mb-1">Điền tên phòng</Typography>
                         <TextField className="bg-white" fullWidth value={room.roomName} onChange={(e) => onNewChange("roomName", e.target.value)}></TextField>
                     </Box>
+                    <Box className="mb-4">
+                        <Typography className="text-sm font-medium text-gray-700 mb-1">Điền sức chứa tối đa của phòng</Typography>
+                        <TextField className="bg-white" fullWidth value={room.maxBookShelfCapity} onChange={(e) => onNewChange("maxBookShelfCapity", e.target.value)}></TextField>
+                    </Box>
                     <Box className="mb-4" >
                         <Typography className="text-sm font-medium text-gray-700 mb-1">Chọn tên tầng</Typography>
                         <FormControl fullWidth margin="normal">

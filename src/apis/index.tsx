@@ -7,6 +7,7 @@ import type { BookCategoryRequest } from "../request/BookCategoryRequest";
 import type { BookChapterRequest } from "../request/BookChapterRequest";
 import type { FloorRequest } from "../request/Warehouse/FloorRequest";
 import type { RoomRequest } from "../request/Warehouse/RoomRequest";
+import type { BookShelfRequest } from "../request/Warehouse/BookShelfRequest";
 
 const axiosConfig = axiosClient();
 
@@ -144,6 +145,30 @@ export const RoomWarehouseApi = {
     },
     deleteRoom: async (id: string) => {
         const response = await axiosConfig.post(`/api/Room/DeleteRoom/${id}`)
+        return response;
+    }
+}
+
+
+export const BookShelfWarehouseApi = {
+    addBookShelf: async (data: BookShelfRequest) => {
+        const response = await axiosConfig.post(`/api/BookShelf/AddBookShelf`, data);
+        return response.data;
+    },
+    getAllBookShelf: async () => {
+        const response = await axiosConfig.get(`/api/BookShelf/GetAllBookShelf`)
+        return response.data;
+    },
+    updateBookShelf: async (id: string, data: BookShelfRequest) => {
+        const response = await axiosConfig.post(`/api/BookItem/UpdateBookItem/${id}`, data)
+        return response.data;
+    },
+    getBookShelfById: async (id: string) => {
+        const response = await axiosConfig.get(`/api/BookItem/GetBookItemById/${id}`)
+        return response;
+    },
+    deleteBookShelf: async (id: string) => {
+        const response = await axiosConfig.post(`/api/BookItem/DeleteBookItem/${id}`)
         return response;
     }
 }

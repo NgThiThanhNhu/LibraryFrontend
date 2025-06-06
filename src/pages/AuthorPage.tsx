@@ -176,6 +176,11 @@ export const AuthorPage = () => {
     return (
         <MainLayout>
             <div>
+                <div className="border-b border-gray-300 pb-4 mb-6">
+                    <h1 className="text-2xl font-semibold text-gray-800">
+                        Quản lý tác giả
+                    </h1>
+                </div>
                 <div className='flex flex-row gap-4'>
                     <div>
                         <Button className="group flex items-center space-x-1 hover:bg-gray-100 " variant="text" onClick={openDialog}>
