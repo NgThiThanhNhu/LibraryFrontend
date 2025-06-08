@@ -1,56 +1,48 @@
 import { useEffect, useState } from 'react'
-
-import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
-import type { FloorResponse } from '../../response/Warehouse/FloorResponse';
-import { BookShelfWarehouseApi, FloorWarehouseApi, RoomWarehouseApi } from '../../apis';
-import FloorTable from '../../layout/warehouse/FloorTable';
+import { ShelfSectionWarehouseApi, ShelfWarehouseApi } from '../../apis';
 import MainLayout from '../../layout/MainLayout';
-import type { RoomRequest } from '../../request/Warehouse/RoomRequest';
-import AddRoomForm from '../../layout/warehouse/AddRoomForm';
-import type { RoomResponse } from '../../response/Warehouse/RoomResponse';
-import RoomTable from '../../layout/warehouse/RoomTable';
-import type { BookShelfRequest } from '../../request/Warehouse/BookShelfRequest';
-import AddBookShelfForm from '../../layout/warehouse/AddBookShelfForm';
-import type { BookShelfResponse } from '../../response/Warehouse/BookShelfResponse';
-import BookShelfTable from '../../layout/warehouse/BookShelfTable';
+import type { ShelfResponse } from '../../response/Warehouse/ShelfResponse';
+import type { ShelfSectionRequest } from '../../request/Warehouse/ShelfSectionRequest';
+import type { ShelfSectionResponse } from '../../response/Warehouse/ShelfSectionResponse';
+import AddShelfSectionForm from '../../layout/warehouse/AddShelfSectionForm';
+import ShelfSectionTable from '../../layout/warehouse/ShelfSectionTable';
 
-export const BookShelfPage = () => {
+export const ShelfSectionPage = () => {
     //add
-    const initialBookShelf: BookShelfRequest = {
-        bookShelfName: " ",
-        numberOfShelves: null,
-        roomId: " "
+    const initialShelfSection: ShelfSectionRequest = {
+        sectionName: " ",
+        capacity: null,
+        shelfId: " "
     }
-    const [bookShelfPage, setbookShelfPage] = useState<BookShelfRequest>(() => initialBookShelf)
-    const [bookShelfPageDialogAdd, setbookShelfPageDialogAdd] = useState<boolean>(false)
-    const [rooms, setRooms] = useState<RoomResponse[]>([]);
+    const [shelfSectionPage, setShelfSectionPage] = useState<ShelfSectionRequest>(() => initialShelfSection)
+    const [shelfSectionPageDialogAdd, setShelfSectionPageDialogAdd] = useState<boolean>(false)
+    const [Shelves, setShelves] = useState<ShelfResponse[]>([]);
     const [reload, setReload] = useState<boolean>(false)
     const openDialog = () => {
-        setbookShelfPageDialogAdd(true)
+        setShelfSectionPageDialogAdd(true)
     }
     const closeDialog = () => {
-        setbookShelfPageDialogAdd(false)
+        setShelfSectionPageDialogAdd(false)
     }
     const newChange = async (
-        fields: keyof BookShelfRequest,
+        fields: keyof ShelfSectionRequest,
         value: string
     ) => {
-        setbookShelfPage(prev => ({ ...prev, [fields]: value }))
+        setShelfSectionPage(prev => ({ ...prev, [fields]: value }))
 
     }
     useEffect(() => {
         const fetchData = async () => {
 
             try {
-                const response = await RoomWarehouseApi.getAllRoom();
+                const response = await ShelfWarehouseApi.getAllShelf();
                 console.log(response);
-                setRooms(response.data);
+                setShelves(response.data);
             } catch (error) {
                 alert('Không tải được dữ liệu lên' + error);
             }
@@ -60,36 +52,38 @@ export const BookShelfPage = () => {
         setReload(false); // tắt reload sau khi tải xong
     }, [reload])
 
-    const handleBtnAddOfBookShelfPage = async () => {
+    const handleBtnAddOfShelfSectionPage = async () => {
 
         try {
-            if (!bookShelfPage.bookShelfName.trim()) {
-                alert("Không để trống tên phòng")
+            if (!shelfSectionPage.sectionName.trim()) {
+                alert("Không để trống tên ngăn")
                 return
-            } else if (bookShelfPage.numberOfShelves == null) {
-                alert("Không để trống sức chứa của phòng")
+            } else if (shelfSectionPage.capacity == null) {
+                alert("Không để trống sức chứa của ô")
                 return
-            } else if (!bookShelfPage.roomId.trim()) {
-                alert("Không để trống tên phòng")
+            } else if (!shelfSectionPage.shelfId.trim()) {
+                alert("Không để trống tên kệ sách")
                 return
             }
-            const checkCurrentBookShelf = rooms.find(r => r.id === bookShelfPage.roomId);
 
-            if (!checkCurrentBookShelf) {
-                alert("Phòng không tồn tại!");
-                return;
-            }
+            // const checkCurrentShef = bookShelves.find(bs => bs.id === shelfPage.bookshelfId);
 
-            if (checkCurrentBookShelf.isFull) {
-                alert("Đã đạt giới hạn số tủ sách của phòng");
-                return;
-            }
+            // if (!checkCurrentShef) {
+            //     alert("Tủ sách không tồn tại!");
+            //     return;
+            // }
 
-            const response = await BookShelfWarehouseApi.addBookShelf(bookShelfPage)
+            // if (checkCurrentShef.isFull) {
+            //     alert("Đã đạt giới hạn số kệ sách trong tủ sách này.");
+            //     return;
+            // }
+
+
+            const response = await ShelfSectionWarehouseApi.addShelfSection(shelfSectionPage)
             console.log(response)
             alert("Thêm thành công" + response)
-            setbookShelfPage(initialBookShelf)
-            setbookShelfPageDialogAdd(false)
+            setShelfSectionPage(initialShelfSection)
+            setShelfSectionPageDialogAdd(false)
             setReload(true)
 
 
@@ -100,19 +94,14 @@ export const BookShelfPage = () => {
 
     //getAll
 
-    const [getAllBookShelf, setGetAllBookShelf] = useState<BookShelfResponse[]>([])
+    const [getAllShelfSection, setGetAllShelfSection] = useState<ShelfSectionResponse[]>([])
     useEffect(() => {
         const fetchData = async () => {
 
             try {
-                const response = await BookShelfWarehouseApi.getAllBookShelf();
+                const response = await ShelfSectionWarehouseApi.getAllShelfSection();
                 console.log(response);
-                const mappedData = response.data.map((BookShelf: BookShelfResponse) => ({
-                    ...BookShelf,
-                    isFull: BookShelf.isFull ? "Đã đầy" : "Còn trống"
-                }));
-
-                setGetAllBookShelf(mappedData);
+                setGetAllShelfSection(response.data);
             } catch (error) {
                 alert('Không tải được dữ liệu lên' + error);
             }
@@ -126,15 +115,13 @@ export const BookShelfPage = () => {
 
     //getbyid
     const [dialogGetById, setDialogGetById] = useState<boolean>(false)
-    const [bookShelfId, setBookShelfId] = useState<string>('');
-    const [bookShelfGetById, setBookShelfGetById] = useState<BookShelfResponse>({
+    const [shelfSectionId, setShelfSectionId] = useState<string>('');
+    const [shelfSectionGetById, setShelfSectionGetById] = useState<ShelfSectionResponse>({
         id: " ",
-        bookShelfName: " ",
-        numberOfShelves: null,
-        roomId: " ",
-        roomName: " ",
-        isFull: false,
-        currentShelves: null
+        sectionName: " ",
+        capacity: null,
+        shelfId: " ",
+        shelfName: ""
     })
     const [box, setBox] = useState<boolean>(false)
 
@@ -143,24 +130,24 @@ export const BookShelfPage = () => {
     }
     const onCloseLogGetById = () => {
         setDialogGetById(false);
-        setBookShelfId('');
+        setShelfSectionId('');
     }
     const onCloseBox = () => {
         setBox(false);
     }
     const onClickGetPublisherById = async () => {
-        if (!bookShelfId?.trim()) {
+        if (!shelfSectionId?.trim()) {
             alert("Vui lòng điền id cần tìm!");
             return;
         }
 
         try {
-            const response = await BookShelfWarehouseApi.getBookShelfById(bookShelfId);
+            const response = await ShelfSectionWarehouseApi.getShelfSectionById(shelfSectionId);
             console.log(response);
 
-            if (response.data.data.id == bookShelfId) {
+            if (response.data.data.id == shelfSectionId) {
                 alert('Lấy dữ liệu thành công' + response);
-                setBookShelfGetById(response.data.data)
+                setShelfSectionGetById(response.data.data)
                 setBox(true);
 
             } else {
@@ -173,9 +160,9 @@ export const BookShelfPage = () => {
 
     //delete
     const [logDelete, setlogDelete] = useState<boolean>(false)
-    const [selectedBookShelfIds, setSelectedBookShelfIds] = useState<string[]>([]);
+    const [selectedShelfSectionIds, setSelectedShelfSectionIds] = useState<string[]>([]);
     const onClickOpenDialogDelete = () => {
-        if (selectedBookShelfIds.length > 0) {
+        if (selectedShelfSectionIds.length > 0) {
             setlogDelete(true);
         } else {
             alert('Bạn chưa chọn dữ liệu để xóa')
@@ -187,13 +174,13 @@ export const BookShelfPage = () => {
     }
     const onHandleBtnDelete = async () => {
         try {
-            for (const id of selectedBookShelfIds) {
-                const response = await BookShelfWarehouseApi.deleteBookShelf(id);
+            for (const id of selectedShelfSectionIds) {
+                const response = await ShelfSectionWarehouseApi.deleteShelfSection(id);
             }
             alert('Xóa thành công')
             setReload(true);
             setlogDelete(false);
-            setSelectedBookShelfIds([]);
+            setSelectedShelfSectionIds([]);
 
         } catch (error) {
             alert('Lỗi không xóa được' + error)
@@ -202,16 +189,16 @@ export const BookShelfPage = () => {
 
     //update
     const [logUpdate, setLogUpdate] = useState<boolean>(false)
-    const [bookShelfUpdate, setbookShelfUpdate] = useState<BookShelfRequest>(() => initialBookShelf)
+    const [shelfSectionUpdate, setShelfSectionUpdate] = useState<ShelfSectionRequest>(() => initialShelfSection)
     const onClickOpenLogUpdate = () => {
-        if (selectedBookShelfIds.length === 1) {
-            const selected = getAllBookShelf.find(p => p.id === selectedBookShelfIds[0])
+        if (selectedShelfSectionIds.length === 1) {
+            const selected = getAllShelfSection.find(p => p.id === selectedShelfSectionIds[0])
             if (selected) {
-                setbookShelfUpdate(selected) //đổ dữ liệu đang có từ hàng vào 
+                setShelfSectionUpdate(selected) //đổ dữ liệu đang có từ hàng vào 
 
                 setLogUpdate(true)
             }
-        } else if (selectedBookShelfIds.length > 1) {
+        } else if (selectedShelfSectionIds.length > 1) {
             alert('Chỉ chọn 1 Id để cập nhật')
         } else {
             alert('Id không được để trống')
@@ -224,13 +211,13 @@ export const BookShelfPage = () => {
     }
     const onHandleUpdateBtn = async () => {
         try {
-            for (const id of selectedBookShelfIds) {
-                const response = await BookShelfWarehouseApi.updateBookShelf(id, bookShelfUpdate)
+            for (const id of selectedShelfSectionIds) {
+                const response = await ShelfSectionWarehouseApi.updateShelfSection(id, shelfSectionUpdate)
             }
             alert('Cập nhật thành công')
             setReload(true)
             setLogUpdate(false)
-            setSelectedBookShelfIds([])
+            setSelectedShelfSectionIds([])
 
         } catch (error) {
             alert('Id không tồn tại ' + error)
@@ -250,7 +237,7 @@ export const BookShelfPage = () => {
                             </span>
                             <AddIcon className="text-gray-700 group-hover:text-blue-500 transition" fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
-                        <AddBookShelfForm dialogAdd={bookShelfPageDialogAdd} onCloseDialog={closeDialog} bookShelf={bookShelfPage} onNewChange={newChange} roomList={rooms} handleBtnAdd={handleBtnAddOfBookShelfPage} />
+                        <AddShelfSectionForm dialogAdd={shelfSectionPageDialogAdd} onCloseDialog={closeDialog} shelfSection={shelfSectionPage} onNewChange={newChange} ShelfList={Shelves} handleBtnAdd={handleBtnAddOfShelfSectionPage} />
                     </div>
                     <div>
                         <Button className="group flex items-center space-x-1 hover:bg-gray-100 " variant="text" onClick={() => {
@@ -260,11 +247,11 @@ export const BookShelfPage = () => {
                             <SearchIcon className="text-gray-700 group-hover:text-blue-500 transition" fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={dialogGetById} onClose={() => { setDialogGetById(false) }}>
-                            <DialogTitle sx={{ textAlign: "center" }}>TÌM THÔNG TIN KHO SÁCH - TỦ SÁCH</DialogTitle>
+                            <DialogTitle sx={{ textAlign: "center" }}>TÌM THÔNG TIN KHO SÁCH - Ô SÁCH</DialogTitle>
                             <DialogContent sx={{ p: 3 }}>
                                 <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                                     <Typography sx={{ width: 200 }}>Điền Id: </Typography>
-                                    <TextField fullWidth placeholder='Nhập Id tủ sách' value={bookShelfId} onChange={(e) => { setBookShelfId(e.target.value) }}></TextField>
+                                    <TextField fullWidth placeholder='Nhập Id kệ sách' value={shelfSectionId} onChange={(e) => { setShelfSectionId(e.target.value) }}></TextField>
                                 </Box>
                                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
                                     <Button color="primary" onClick={onClickGetPublisherById}>Tìm</Button>
@@ -272,13 +259,14 @@ export const BookShelfPage = () => {
                                 </Box>
                                 <Box >
                                     {box && (
-                                        bookShelfGetById && (
+                                        shelfSectionGetById && (
                                             <div style={{ marginTop: 20 }}>
-                                                <TextField label="Id tủ sách" value={bookShelfGetById.id} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                                <TextField label="Tên tủ sách " value={bookShelfGetById.bookShelfName} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                                <TextField label="Số kệ của tủ " value={bookShelfGetById.numberOfShelves} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                                <TextField label="Id của phòng " value={bookShelfGetById.roomId} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-                                                <TextField label="Tên phòng " value={bookShelfGetById.roomName} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Id ô sách" value={shelfSectionGetById.id} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Tên ô sách " value={shelfSectionGetById.sectionName} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Sức chứa của ô " value={shelfSectionGetById.capacity} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Id kệ sách " value={shelfSectionGetById.shelfId} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+                                                <TextField label="Tên kệ sách " value={shelfSectionGetById.shelfName} fullWidth margin="normal" InputProps={{ readOnly: true }} />
+
                                             </div>
                                         )
                                     )
@@ -312,42 +300,42 @@ export const BookShelfPage = () => {
                             <EditIcon className="text-gray-700 group-hover:text-blue-500 transition" fontSize='small' sx={{ marginLeft: 0.22 }} />
                         </Button>
                         <Dialog open={logUpdate} onClose={() => { setLogUpdate(false) }}>
-                            <DialogTitle sx={{ textAlign: "center" }}>Cập nhật thông tin kho sách - tủ sách</DialogTitle>
+                            <DialogTitle sx={{ textAlign: "center" }}>Cập nhật thông tin kho sách - ô sách</DialogTitle>
                             <DialogContent>
                                 <DialogContent sx={{ p: 3 }}>
                                     <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                        <Typography sx={{ width: 300 }}>Điền số phòng:</Typography>
-                                        <TextField fullWidth placeholder='Nhập tên tủ sách' value={bookShelfUpdate.bookShelfName} onChange={(e) => setbookShelfUpdate({ ...bookShelfUpdate, bookShelfName: e.target.value })}></TextField>
+                                        <Typography sx={{ width: 300 }}>Điền tên ô:</Typography>
+                                        <TextField fullWidth placeholder='Nhập tên tủ sách' value={shelfSectionUpdate.sectionName} onChange={(e) => setShelfSectionUpdate({ ...shelfSectionUpdate, sectionName: e.target.value })}></TextField>
                                     </Box>
                                     <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                        <Typography sx={{ width: 300 }}>Điền số kệ của tủ:</Typography>
+                                        <Typography sx={{ width: 300 }}>Điền sức chứa của ô:</Typography>
                                         <TextField
                                             fullWidth
                                             type="number"
-                                            placeholder="số kệ"
-                                            value={bookShelfUpdate.numberOfShelves ?? ""}
+                                            placeholder="sức chứa"
+                                            value={shelfSectionUpdate.capacity ?? ""}
                                             onChange={(e) =>
-                                                setbookShelfUpdate({
-                                                    ...bookShelfUpdate,
-                                                    numberOfShelves: e.target.value === "" ? null : parseInt(e.target.value)
+                                                setShelfSectionUpdate({
+                                                    ...shelfSectionUpdate,
+                                                    capacity: e.target.value === "" ? null : parseInt(e.target.value)
                                                 })
                                             }
                                         />
 
                                     </Box>
                                     <Box className="mb-4" >
-                                        <Typography className="text-sm font-medium text-gray-700 mb-1">Chọn tên phòng</Typography>
+                                        <Typography className="text-sm font-medium text-gray-700 mb-1">Chọn kệ sách</Typography>
                                         <FormControl fullWidth margin="normal">
-                                            <InputLabel id="floor-select-label" >Chọn phòng</InputLabel>
+                                            <InputLabel id="floor-select-label" >Chọn kệ sách</InputLabel>
                                             <Select
-                                                labelId="phòng"
-                                                value={bookShelfUpdate.roomId}
-                                                label="Chọn phòng"
-                                                onChange={(e) => setbookShelfUpdate({ ...bookShelfUpdate, roomId: e.target.value })}
+                                                labelId="kệ sách"
+                                                value={shelfSectionUpdate.shelfId}
+                                                label="Chọn tủ sách"
+                                                onChange={(e) => setShelfSectionUpdate({ ...shelfSectionUpdate, shelfId: e.target.value })}
                                             >
-                                                {rooms.map((room) => (
-                                                    <MenuItem key={room.id} value={room.id}>
-                                                        {room.floorName}
+                                                {Shelves.map((Shelf) => (
+                                                    <MenuItem key={Shelf.id} value={Shelf.id}>
+                                                        {Shelf.shelfName}
                                                     </MenuItem>
                                                 ))}
                                             </Select>
@@ -363,7 +351,7 @@ export const BookShelfPage = () => {
                     </div>
                 </div>
                 <div className='DataTable'>
-                    <BookShelfTable data={getAllBookShelf} reload={reload} onSelectionChange={setSelectedBookShelfIds} />
+                    <ShelfSectionTable data={getAllShelfSection} reload={reload} onSelectionChange={setSelectedShelfSectionIds} />
                 </div>
             </div>
         </MainLayout >

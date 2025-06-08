@@ -3,6 +3,7 @@ export interface BookShelfResponse {
     bookShelfName: string,
     numberOfShelves: number | null,
     roomId: string,
-    roomName: string
-
+    roomName: string,
+    isFull: boolean,
+    currentShelves: number | null
 }

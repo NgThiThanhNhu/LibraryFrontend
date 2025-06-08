@@ -9,6 +9,9 @@ import { BookChapterPage } from "./pages/BookChapterPage";
 import { FloorPage } from "./pages/warehouse/FloorPage";
 import { RoomPage } from "./pages/warehouse/RoomPage";
 import { BookShelfPage } from "./pages/warehouse/BookShelfPage";
+import { ShelfPage } from "./pages/warehouse/ShelfPage";
+import { ShelfSectionPage } from "./pages/warehouse/ShelfSectionPage";
+import { BookImportPage } from "./pages/warehouse/BookImportPage";
 
 
 
@@ -26,6 +29,9 @@ function App() {
         <Route path="/warehouse/floor" element={<FloorPage />} />
         <Route path="/warehouse/room" element={<RoomPage />} />
         <Route path="/warehouse/bookshelf" element={<BookShelfPage />} />
+        <Route path="/warehouse/shelf" element={<ShelfPage />} />
+        <Route path="/warehouse/shelfsection" element={<ShelfSectionPage />} />
+        <Route path="/bookimport" element={<BookImportPage />} />
       </Routes>
     </Router>
   );

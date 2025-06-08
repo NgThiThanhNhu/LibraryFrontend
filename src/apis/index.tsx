@@ -8,6 +8,9 @@ import type { BookChapterRequest } from "../request/BookChapterRequest";
 import type { FloorRequest } from "../request/Warehouse/FloorRequest";
 import type { RoomRequest } from "../request/Warehouse/RoomRequest";
 import type { BookShelfRequest } from "../request/Warehouse/BookShelfRequest";
+import type { ShelfRequest } from "../request/Warehouse/ShelfResquest";
+import type { ShelfSectionRequest } from "../request/Warehouse/ShelfSectionRequest";
+import type { BookImportRequest } from "../request/Warehouse/BookImportRequest";
 
 const axiosConfig = axiosClient();
 
@@ -169,6 +172,75 @@ export const BookShelfWarehouseApi = {
     },
     deleteBookShelf: async (id: string) => {
         const response = await axiosConfig.post(`/api/BookItem/DeleteBookItem/${id}`)
+        return response;
+    }
+}
+
+export const ShelfWarehouseApi = {
+    addShelf: async (data: ShelfRequest) => {
+        const response = await axiosConfig.post(`/api/Shelf/AddShelf`, data);
+        return response.data;
+    },
+    getAllShelf: async () => {
+        const response = await axiosConfig.get(`/api/Shelf/GetAllShelf`)
+        return response.data;
+    },
+    updateShelf: async (id: string, data: ShelfRequest) => {
+        const response = await axiosConfig.post(`/api/Shelf/UpdateShelf/${id}`, data)
+        return response.data;
+    },
+    getShelfById: async (id: string) => {
+        const response = await axiosConfig.get(`/api/Shelf/GetShelfById/${id}`)
+        return response;
+    },
+    deleteShelf: async (id: string) => {
+        const response = await axiosConfig.post(`/api/Shelf/DeleteShelf/${id}`)
+        return response;
+    }
+}
+
+export const ShelfSectionWarehouseApi = {
+    addShelfSection: async (data: ShelfSectionRequest) => {
+        const response = await axiosConfig.post(`/api/ShelfSection/AddShelfSection`, data);
+        return response.data;
+    },
+    getAllShelfSection: async () => {
+        const response = await axiosConfig.get(`/api/ShelfSection/GetAllShelfSection`)
+        return response.data;
+    },
+    updateShelfSection: async (id: string, data: ShelfSectionRequest) => {
+        const response = await axiosConfig.post(`/api/ShelfSection/UpdateShelfSection/${id}`, data)
+        return response.data;
+    },
+    getShelfSectionById: async (id: string) => {
+        const response = await axiosConfig.get(`/api/ShelfSection/GetShelfSectionById/${id}`)
+        return response;
+    },
+    deleteShelfSection: async (id: string) => {
+        const response = await axiosConfig.post(`/api/ShelfSection/DeleteShelfSection/${id}`)
+        return response;
+    }
+}
+
+export const BookImportWarehouseApi = {
+    addBook: async (data: BookImportRequest) => {
+        const response = await axiosConfig.post(`/api/Book/AddBook`, data);
+        return response.data;
+    },
+    getAllBookImport: async () => {
+        const response = await axiosConfig.get(`/api/Book/GetAllBook`)
+        return response.data;
+    },
+    updateBookImport: async (id: string, data: BookImportRequest) => {
+        const response = await axiosConfig.post(`/api/Book/UpdateBook/${id}`, data)
+        return response.data;
+    },
+    getBookImportById: async (id: string) => {
+        const response = await axiosConfig.get(`/api/Book/GetBookById/${id}`)
+        return response;
+    },
+    deleteBookImport: async (id: string) => {
+        const response = await axiosConfig.post(`/api/Book/DeleteBook/${id}`)
         return response;
     }
 }

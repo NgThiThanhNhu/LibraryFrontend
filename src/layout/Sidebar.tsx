@@ -15,6 +15,8 @@ export default function Sidebar({ isOpen }: Props) {
     const [isWarehouseOpen, setIsWarehouseOpen] = useState(false);
     const [isStorageAreaOpen, setIsStorageAreaOpen] = useState(false);
     const [isBookStatusOpen, setIsBookStatusOpen] = useState(false);
+    const [isImportHistory, setIsImportHistory] = useState(false);
+    const [isHistory, setIsHistory] = useState(false);
 
     return (
         <div
@@ -92,7 +94,7 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isStorageAreaOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/book-import" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a></li>
+                                        <li><a href="/bookimport" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a></li>
                                         <li><a href="/book-export" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a></li>
                                     </ul>
                                 )}
@@ -140,8 +142,8 @@ export default function Sidebar({ isOpen }: Props) {
                                         <li><a href="/warehouse/floor" className="block px-4 py-1 hover:text-blue-400">Tầng</a></li>
                                         <li><a href="/warehouse/room" className="block px-4 py-1 hover:text-blue-400">Phòng</a></li>
                                         <li><a href="/warehouse/bookshelf" className="block px-4 py-1 hover:text-blue-400">Tủ sách</a></li>
-                                        <li><a href="/warehouse/rack" className="block px-4 py-1 hover:text-blue-400">Kệ sách</a></li>
-                                        <li><a href="/warehouse/slot" className="block px-4 py-1 hover:text-blue-400">Ô sách</a></li>
+                                        <li><a href="/warehouse/shelf" className="block px-4 py-1 hover:text-blue-400">Kệ sách</a></li>
+                                        <li><a href="/warehouse/shelfsection" className="block px-4 py-1 hover:text-blue-400">Ô sách</a></li>
                                     </ul>
                                 )}
                             </li>
@@ -156,7 +158,34 @@ export default function Sidebar({ isOpen }: Props) {
                         Users
                     </a>
                 </li>
+                <li>
+                    <div
+                        onClick={() => setIsHistory(!isHistory)}
+                        className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded cursor-pointer"
+                    >
+                        <WarehouseIcon className="text-lg" />
+                        Quản lý lịch sử
+                    </div>
+                    {isHistory && (
+                        <ul className="mt-1 ml-4 space-y-1 text-sm">
+                            <li>
+                                <div
+                                    onClick={() => setIsImportHistory(!isImportHistory)}
+                                    className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer"
+                                >
+                                    <LocationOnIcon className="text-lg" />
+                                    Nhập sách
+                                </div>
+                                {isImportHistory && (
+                                    <ul className="mt-1 ml-4 space-y-1">
+                                        <li><a href="#" className="block px-4 py-1 hover:text-blue-400">Lịch sử nhập sách</a></li>
 
+                                    </ul>
+                                )}
+                            </li>
+                        </ul>
+                    )}
+                </li>
                 {/* Settings */}
                 <li>
                     <a href="/settings" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
