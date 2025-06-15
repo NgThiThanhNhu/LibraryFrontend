@@ -16,7 +16,8 @@ const columns: GridColDef[] = [
     { field: 'capacity', headerName: 'Sức chứa của ô', flex: 1 },
     { field: 'shelfId', headerName: 'Id kệ sách', flex: 1 },
     { field: 'shelfName', headerName: 'Tên kệ sách', flex: 1 },
-
+    { field: 'currentBookItem', headerName: 'Sách hiện tại có trong ô', flex: 1 },
+    { field: 'isFull', headerName: 'Trạng thái ô sách', flex: 1 },
 ];
 
 

@@ -16,6 +16,7 @@ export const AuthorPage = () => {
     }
     const [author, setAuthor] = useState<AuthorRequest>(() => initialAuthor)
     const [dialogAdd, setDialogAdd] = useState<boolean>(false)
+    const [reload, setReload] = useState<boolean>(false)
     const openDialog = () => {
         setDialogAdd(true)
     }
@@ -40,14 +41,13 @@ export const AuthorPage = () => {
             alert("Thêm tác giả thành công" + response)
             setAuthor(initialAuthor)
             setDialogAdd(false)
-
+            setReload(true)
         } catch (error) {
             alert("Lỗi. Vui lòng check console" + error)
         }
     }
 
     //getAll
-    const [reload, setReload] = useState<boolean>(false)
     const [getAllAuthor, setGetAllAuthor] = useState<AuthorResponse[]>([])
     useEffect(() => {
         const fetchData = async () => {

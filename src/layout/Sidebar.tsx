@@ -4,6 +4,7 @@ import { FaBook } from "react-icons/fa6";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import HistoryIcon from '@mui/icons-material/History';
 
 interface Props {
     isOpen: boolean;
@@ -17,7 +18,7 @@ export default function Sidebar({ isOpen }: Props) {
     const [isBookStatusOpen, setIsBookStatusOpen] = useState(false);
     const [isImportHistory, setIsImportHistory] = useState(false);
     const [isHistory, setIsHistory] = useState(false);
-
+    const [isBookOnline, setIsBookOnline] = useState(false);
     return (
         <div
             className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"
@@ -51,6 +52,29 @@ export default function Sidebar({ isOpen }: Props) {
                             </li>
                             <li>
                                 <a href="/bookitem" className="block px-4 py-1 hover:text-blue-400">Từng cuốn sách</a>
+                            </li>
+                        </ul>
+                    )}
+                </li>
+
+                <li>
+                    <div
+                        onClick={() => setIsBookOnline(!isBookOnline)}
+                        className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded cursor-pointer"
+                    >
+                        <FaBook className="text-lg" />
+                        Quản lý sách online
+                    </div>
+                    {isBookOnline && (
+                        <ul className="mt-1 ml-4 space-y-1 text-sm">
+                            <li>
+                                <a href="/bookonline" className="block px-4 py-1 hover:text-blue-400">Quản lý Sách</a>
+                            </li>
+                            <li>
+                                <a href="#" className="block px-4 py-1 hover:text-blue-400">Số tập</a>
+                            </li>
+                            <li>
+                                <a href="#" className="block px-4 py-1 hover:text-blue-400">Từng cuốn sách</a>
                             </li>
                         </ul>
                     )}
@@ -95,7 +119,7 @@ export default function Sidebar({ isOpen }: Props) {
                                 {isStorageAreaOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
                                         <li><a href="/bookimport" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a></li>
-                                        <li><a href="/book-export" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a></li>
+                                        <li><a href="#" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a></li>
                                     </ul>
                                 )}
                             </li>
@@ -163,7 +187,7 @@ export default function Sidebar({ isOpen }: Props) {
                         onClick={() => setIsHistory(!isHistory)}
                         className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded cursor-pointer"
                     >
-                        <WarehouseIcon className="text-lg" />
+                        <HistoryIcon className="text-lg" />
                         Quản lý lịch sử
                     </div>
                     {isHistory && (
@@ -178,7 +202,7 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isImportHistory && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="#" className="block px-4 py-1 hover:text-blue-400">Lịch sử nhập sách</a></li>
+                                        <li><a href="/importtransaction" className="block px-4 py-1 hover:text-blue-400">Lịch sử nhập sách</a></li>
 
                                     </ul>
                                 )}

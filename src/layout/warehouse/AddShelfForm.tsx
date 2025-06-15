@@ -38,17 +38,15 @@ export default function AddShelfForm({ dialogAdd, onCloseDialog, shelf, onNewCha
                                 label="Chọn tủ sách"
                                 onChange={(e) => onNewChange("bookshelfId", e.target.value)}
                             >
+                                <MenuItem value="" disabled>
+                                    -- Chọn phòng --
+                                </MenuItem>
                                 {bookShelfList.map((bookShelf) => (
-                                    <Tooltip key={bookShelf.id}
-                                        title={bookShelf.isFull ? "Số kệ đã đầy" : ""}
-                                        arrow
-                                        placement="right">
-                                        <span>
-                                            <MenuItem key={bookShelf.id} value={bookShelf.id} disabled={bookShelf.isFull} style={{ opacity: bookShelf.isFull ? 0.5 : 1 }}>
-                                                {bookShelf.bookShelfName}
-                                            </MenuItem>
-                                        </span>
-                                    </Tooltip>
+
+                                    <MenuItem key={bookShelf.id} value={bookShelf.id} disabled={bookShelf.isFull} style={{ opacity: bookShelf.isFull ? 0.5 : 1 }}>
+                                        {bookShelf.bookShelfName}
+                                    </MenuItem>
+
                                 ))}
                             </Select>
                         </FormControl>

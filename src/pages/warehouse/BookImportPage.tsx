@@ -119,6 +119,7 @@ export const BookImportPage = () => {
         setReload(false); // tắt reload sau khi tải xong
     }, [reload])
 
+    const [totalPriceResponse, setTotalPriceResponse] = useState<number | null>(null)
     const handleBtnAddOfBookImportPage = async () => {
 
         try {
@@ -146,18 +147,11 @@ export const BookImportPage = () => {
             } else if (!bookImportPage.yearPublished == null) {
                 alert("Không để trống năm xuất bản của sách")
                 return
+            } else if (!totalPriceResponse == null) {
+                alert("Tính tổng tiền thất bại. Vui lòng kiểm tra lại")
+                return
             }
-            // const checkCurrent = rooms.find(r => r.id === bookShelfPage.roomId);
 
-            // if (!checkCurrentBookShelf) {
-            //     alert("Phòng không tồn tại!");
-            //     return;
-            // }
-
-            // if (checkCurrentBookShelf.isFull) {
-            //     alert("Đã đạt giới hạn số tủ sách của phòng");
-            //     return;
-            // }
 
             const response = await BookImportWarehouseApi.addBook(bookImportPage)
             console.log(response)
@@ -165,7 +159,7 @@ export const BookImportPage = () => {
             setBookImportPage(initialBookImport)
             setBookImportPageDialogAdd(false)
             setReload(true)
-
+            setTotalPriceResponse(response.data.data.totalPrice)
 
         } catch (error) {
             alert("Lỗi. Vui lòng check console" + error)

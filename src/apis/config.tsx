@@ -6,5 +6,7 @@ export const axiosClient = (): AxiosInstance => {
     return axios.create({
         baseURL: 'https://localhost:7260',
         withCredentials: true
+
+
     });
 }

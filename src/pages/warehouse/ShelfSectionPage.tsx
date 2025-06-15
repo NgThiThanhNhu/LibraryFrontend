@@ -17,7 +17,7 @@ export const ShelfSectionPage = () => {
     const initialShelfSection: ShelfSectionRequest = {
         sectionName: " ",
         capacity: null,
-        shelfId: " "
+        shelfId: ""
     }
     const [shelfSectionPage, setShelfSectionPage] = useState<ShelfSectionRequest>(() => initialShelfSection)
     const [shelfSectionPageDialogAdd, setShelfSectionPageDialogAdd] = useState<boolean>(false)
@@ -101,7 +101,12 @@ export const ShelfSectionPage = () => {
             try {
                 const response = await ShelfSectionWarehouseApi.getAllShelfSection();
                 console.log(response);
-                setGetAllShelfSection(response.data);
+                const mappedData = response.data.map((shelfsection: ShelfSectionResponse) => ({
+                    ...shelfsection,
+                    isFull: shelfsection.isFull ? "Đã đầy" : "Còn trống"
+                }));
+
+                setGetAllShelfSection(mappedData);
             } catch (error) {
                 alert('Không tải được dữ liệu lên' + error);
             }
@@ -120,8 +125,10 @@ export const ShelfSectionPage = () => {
         id: " ",
         sectionName: " ",
         capacity: null,
-        shelfId: " ",
-        shelfName: ""
+        shelfId: "",
+        shelfName: "",
+        isFull: false,
+        currentBookItem: null
     })
     const [box, setBox] = useState<boolean>(false)
 

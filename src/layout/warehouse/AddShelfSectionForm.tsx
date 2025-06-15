@@ -38,16 +38,11 @@ export default function AddShelfSectionForm({ dialogAdd, onCloseDialog, shelfSec
                                 onChange={(e) => onNewChange("shelfId", e.target.value)}
                             >
                                 {ShelfList.map((Shelf) => (
-                                    <Tooltip key={Shelf.id}
-                                        title={Shelf.isFull ? "Ô đã đầy" : ""}
-                                        arrow
-                                        placement="right">
-                                        <span>
-                                            <MenuItem key={Shelf.id} value={Shelf.id} disabled={Shelf.isFull} style={{ opacity: Shelf.isFull ? 0.5 : 1 }}>
-                                                {Shelf.shelfName}
-                                            </MenuItem>
-                                        </span>
-                                    </Tooltip>
+
+                                    <MenuItem key={Shelf.id} value={Shelf.id} disabled={Shelf.isFull} style={{ opacity: Shelf.isFull ? 0.5 : 1 }}>
+                                        {Shelf.shelfName}
+                                    </MenuItem>
+
                                 ))}
                             </Select>
                         </FormControl>

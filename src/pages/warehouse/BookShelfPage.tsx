@@ -23,9 +23,9 @@ import BookShelfTable from '../../layout/warehouse/BookShelfTable';
 export const BookShelfPage = () => {
     //add
     const initialBookShelf: BookShelfRequest = {
-        bookShelfName: " ",
+        bookShelfName: "",
         numberOfShelves: null,
-        roomId: " "
+        roomId: ""
     }
     const [bookShelfPage, setbookShelfPage] = useState<BookShelfRequest>(() => initialBookShelf)
     const [bookShelfPageDialogAdd, setbookShelfPageDialogAdd] = useState<boolean>(false)

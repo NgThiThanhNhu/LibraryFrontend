@@ -11,6 +11,8 @@ import type { BookShelfRequest } from "../request/Warehouse/BookShelfRequest";
 import type { ShelfRequest } from "../request/Warehouse/ShelfResquest";
 import type { ShelfSectionRequest } from "../request/Warehouse/ShelfSectionRequest";
 import type { BookImportRequest } from "../request/Warehouse/BookImportRequest";
+import type { BookFileRequest } from "../request/BookFileRequest";
+import type { BookItemRequest } from "../request/BookItemRequest";
 
 const axiosConfig = axiosClient();
 
@@ -245,6 +247,62 @@ export const BookImportWarehouseApi = {
     }
 }
 
+export const BookFileApi = {
+    uploadBookFile: async (data: BookFileRequest) => {
+        const formData = new FormData();
+        formData.append("BookId", data.BookId);
+        if (data.UploadFile) {
+            formData.append("UploadFile", data.UploadFile);
+        }
+        if (data.Image) {
+            formData.append("Image", data.Image);
+        }
+        formData.append("BookFileType", data.BookFileType.toString());
+
+        const response = await axiosConfig.post(`/api/BookFile/UploadFileAndImage`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        return response.data;
+    }
+}
+
+export const BookImportTransactionWarehouseApi = {
+
+    getAllBookImportTransaction: async () => {
+        const response = await axiosConfig.get(`/api/BookImportTransaction/GetAllBookImportTransaction`)
+        return response.data;
+    },
+    getBookImportTransactionbyId: async (BookId: string) => {
+        const response = await axiosConfig.get(`/api/BookImportTransaction/GetBookImportTransactionById/${BookId}`)
+        return response
+    }
+}
+
+export const BookItemApi = {
+    addBookItem: async (data: BookItemRequest) => {
+        const response = await axiosConfig.post(`/api/BookItem/AddBookItem`, data);
+        return response.data;
+    },
+    getAllBookItem: async () => {
+        const response = await axiosConfig.get(`/api/BookItem/GetAllBookItem`)
+        return response.data;
+    },
+    updateBookItem: async (id: string, data: BookItemRequest) => {
+        const response = await axiosConfig.post(`/api/BookItem/UpdateBookItem/${id}`, data)
+        return response.data;
+    },
+    getItemById: async (id: string) => {
+        const response = await axiosConfig.get(`/api/BookItem/UpdateBookItem/${id}`)
+        return response;
+    },
+    deleteItem: async (id: string) => {
+        const response = await axiosConfig.post(`/api/BookItem/DeleteBookItem/${id}`)
+        return response;
+    }
+}
+
 export const Authetication = {
     login: async (data: LoginRequest) => {
         const response = await axiosConfig.post(`/api/Authentication/Login`, data);
@@ -252,3 +310,10 @@ export const Authetication = {
     }
 }
 
+
+export const AutheticationInfo = {
+    getInfo: async () => {
+        const response = await axiosConfig.get(`/api/AuthenticationInfo/authenticationInfor`);
+        return response;
+    }
+}

@@ -4,6 +4,7 @@ export interface ShelfSectionResponse {
     capacity: number | null,
     shelfId: string,
     shelfName: string,
-
+    isFull: boolean,
+    currentBookItem: number | null
 
 }

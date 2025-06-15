@@ -1,15 +1,14 @@
 import { Box, Button, Icon, IconButton, InputAdornment, Paper, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Authetication } from '../apis';
-import type { LoginRequest } from '../request/LoginRequest';
-import { Form, useNavigate } from 'react-router-dom';
-import { Login } from '@mui/icons-material';
-import loginBg from '../assets/loginBg.jpg'
+import { useState } from 'react'
+
+import { Authetication } from '../../apis';
+import type { LoginRequest } from '../../request/LoginRequest';
+import { useNavigate } from 'react-router-dom';
+import loginBg from '../../assets/loginBg.jpg'
 
 export const AuthenticationPage = () => {
     const initialLogin: LoginRequest = {
-        username: "",
+        email: "",
         password: ""
     }
 
@@ -20,7 +19,7 @@ export const AuthenticationPage = () => {
 
     const onhandleLogin = async () => {
         try {
-            if (!login.username.trim()) {
+            if (!login.email.trim()) {
                 alert('email không được để trống!')
                 return
             } else if (!login.password.trim()) {
@@ -28,7 +27,7 @@ export const AuthenticationPage = () => {
                 return
             }
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(login.username)) {
+            if (!emailRegex.test(login.email)) {
                 alert("Email không hợp lệ!");
                 return;
             }
@@ -78,8 +77,8 @@ export const AuthenticationPage = () => {
                         <TextField
                             fullWidth
                             placeholder="Email Address"
-                            value={login.username}
-                            onChange={(e) => setLogin({ ...login, username: e.target.value })}
+                            value={login.email}
+                            onChange={(e) => setLogin({ ...login, email: e.target.value })}
                             error={!!usernameError}
                             helperText={usernameError}
                         />
