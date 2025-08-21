@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { BookCategoryRequest } from '../request/BookCategoryRequest';
 import { BookCategoryApi } from '../apis';
 
-import MainLayout from '../layout/MainLayout';
+import MainLayout from '../layout/mainLayout/MainLayout';
 import { Box, Button, Dialog, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';

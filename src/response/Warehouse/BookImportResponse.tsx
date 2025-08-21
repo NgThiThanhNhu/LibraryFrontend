@@ -13,4 +13,9 @@ export interface BookImportResponse {
     unitPrice: number | null,
     categoryName: string,
     titleBookChapter: string
+    description: string,
+    slug: string,
+    bookFileId: string[],
+    imageUrls: string[],
+    fileUrls: string[]
 }

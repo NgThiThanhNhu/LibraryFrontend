@@ -6,6 +6,6 @@ export interface BookImportRequest {
     quantity: number | null,
     unitPrice: number | null,
     categoryId: string,
-    bookChapterId: string
-
+    bookChapterId: string,
+    description: string
 }

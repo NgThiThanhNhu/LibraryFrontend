@@ -17,6 +17,7 @@ export default function Sidebar({ isOpen }: Props) {
     const [isStorageAreaOpen, setIsStorageAreaOpen] = useState(false);
     const [isBookStatusOpen, setIsBookStatusOpen] = useState(false);
     const [isImportHistory, setIsImportHistory] = useState(false);
+    const [isExportHistory, setIsExportHistory] = useState(false);
     const [isHistory, setIsHistory] = useState(false);
     const [isBookOnline, setIsBookOnline] = useState(false);
     return (
@@ -45,13 +46,13 @@ export default function Sidebar({ isOpen }: Props) {
                     {isBooksOpen && (
                         <ul className="mt-1 ml-4 space-y-1 text-sm">
                             <li>
-                                <a href="/bookcategory" className="block px-4 py-1 hover:text-blue-400">Loại sách</a>
+                                <a href="/admin/bookcategory" className="block px-4 py-1 hover:text-blue-400">Loại sách</a>
                             </li>
                             <li>
-                                <a href="/bookchapter" className="block px-4 py-1 hover:text-blue-400">Số tập</a>
+                                <a href="/admin/bookchapter" className="block px-4 py-1 hover:text-blue-400">Số tập</a>
                             </li>
                             <li>
-                                <a href="/bookitem" className="block px-4 py-1 hover:text-blue-400">Từng cuốn sách</a>
+                                <a href="/admin/borrow-manage" className="block px-4 py-1 hover:text-blue-400">Quản lý cuốn sách và trạng thái phiếu mượn</a>
                             </li>
                         </ul>
                     )}
@@ -68,21 +69,16 @@ export default function Sidebar({ isOpen }: Props) {
                     {isBookOnline && (
                         <ul className="mt-1 ml-4 space-y-1 text-sm">
                             <li>
-                                <a href="/bookonline" className="block px-4 py-1 hover:text-blue-400">Quản lý Sách</a>
+                                <a href="/admin/bookonline" className="block px-4 py-1 hover:text-blue-400">Tải Sách</a>
                             </li>
-                            <li>
-                                <a href="#" className="block px-4 py-1 hover:text-blue-400">Số tập</a>
-                            </li>
-                            <li>
-                                <a href="#" className="block px-4 py-1 hover:text-blue-400">Từng cuốn sách</a>
-                            </li>
+
                         </ul>
                     )}
                 </li>
 
                 {/* Authors */}
                 <li>
-                    <a href="/author" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <a href="/admin/author" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaUsers className="text-lg" />
                         Book Authors
                     </a>
@@ -90,7 +86,7 @@ export default function Sidebar({ isOpen }: Props) {
 
                 {/* Publishers */}
                 <li>
-                    <a href="/publisher" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <a href="/admin/publisher" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaUsers className="text-lg" />
                         Publishers
                     </a>
@@ -118,8 +114,8 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isStorageAreaOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/bookimport" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a></li>
-                                        <li><a href="#" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a></li>
+                                        <li><a href="/admin/bookimport" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a></li>
+                                        <li><a href="/admin/bookexport" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a></li>
                                     </ul>
                                 )}
                             </li>
@@ -134,7 +130,8 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isBookStatusOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/book-status" className="block px-4 py-1 hover:text-blue-400">Mượn - Trả - Đặt trước</a></li>
+                                        <li><a href="/admin/borrow-manage" className="block px-4 py-1 hover:text-blue-400">Mượn - Trả </a></li>
+                                        <li><a href="/admin/bookreserve" className="block px-4 py-1 hover:text-blue-400">Đặt trước</a></li>
                                     </ul>
                                 )}
                             </li>
@@ -163,11 +160,11 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isStorageAreaOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/warehouse/floor" className="block px-4 py-1 hover:text-blue-400">Tầng</a></li>
-                                        <li><a href="/warehouse/room" className="block px-4 py-1 hover:text-blue-400">Phòng</a></li>
-                                        <li><a href="/warehouse/bookshelf" className="block px-4 py-1 hover:text-blue-400">Tủ sách</a></li>
-                                        <li><a href="/warehouse/shelf" className="block px-4 py-1 hover:text-blue-400">Kệ sách</a></li>
-                                        <li><a href="/warehouse/shelfsection" className="block px-4 py-1 hover:text-blue-400">Ô sách</a></li>
+                                        <li><a href="/admin/warehouse/floor" className="block px-4 py-1 hover:text-blue-400">Tầng</a></li>
+                                        <li><a href="/admin/warehouse/room" className="block px-4 py-1 hover:text-blue-400">Phòng</a></li>
+                                        <li><a href="/admin/warehouse/bookshelf" className="block px-4 py-1 hover:text-blue-400">Tủ sách</a></li>
+                                        <li><a href="/admin/warehouse/shelf" className="block px-4 py-1 hover:text-blue-400">Kệ sách</a></li>
+                                        <li><a href="/admin/warehouse/shelfsection" className="block px-4 py-1 hover:text-blue-400">Ô sách</a></li>
                                     </ul>
                                 )}
                             </li>
@@ -177,7 +174,7 @@ export default function Sidebar({ isOpen }: Props) {
 
                 {/* Users */}
                 <li>
-                    <a href="/users" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <a href="/admin/manageusers" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaUsers className="text-lg" />
                         Users
                     </a>
@@ -202,8 +199,23 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isImportHistory && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/importtransaction" className="block px-4 py-1 hover:text-blue-400">Lịch sử nhập sách</a></li>
+                                        <li><a href="/admin/importtransaction" className="block px-4 py-1 hover:text-blue-400">Lịch sử nhập sách</a></li>
+                                        <li><a href="/admin/bookexporthistory" className="block px-4 py-1 hover:text-blue-400">Lịch sử xuất sách</a></li>
+                                    </ul>
+                                )}
+                            </li>
+                            <li>
+                                <div
+                                    onClick={() => setIsExportHistory(!isExportHistory)}
+                                    className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer"
+                                >
+                                    <LocationOnIcon className="text-lg" />
+                                    Xuất sách
+                                </div>
+                                {isExportHistory && (
+                                    <ul className="mt-1 ml-4 space-y-1">
 
+                                        <li><a href="/admin/bookexporthistory" className="block px-4 py-1 hover:text-blue-400">Lịch sử xuất sách</a></li>
                                     </ul>
                                 )}
                             </li>

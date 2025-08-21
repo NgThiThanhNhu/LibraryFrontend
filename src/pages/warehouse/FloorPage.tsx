@@ -7,10 +7,11 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import type { FloorRequest } from '../../request/Warehouse/FloorRequest';
-import type { FloorResponse } from '../../response/Warehouse/FloorResponse';
 import { FloorWarehouseApi } from '../../apis';
+import type { FloorResponse } from '../../response/Warehouse/FloorResponse';
+import MainLayout from '../../layout/mainLayout/MainLayout';
 import FloorTable from '../../layout/warehouse/FloorTable';
-import MainLayout from '../../layout/MainLayout';
+
 
 export const FloorPage = () => {
     const initialFloor: FloorRequest = {

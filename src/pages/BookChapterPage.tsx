@@ -4,7 +4,7 @@ import { AuthorApi, BookChapterApi } from '../apis'
 import { Box, Button, Dialog, DialogContent, DialogTitle, TextField, Typography } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import MainLayout from '../layout/MainLayout';
+import MainLayout from '../layout/mainLayout/MainLayout';
 import type { AuthorResponse } from '../response/AuthorResponse';
 import AuthorTable from '../layout/AuthorTable';
 import DeleteIcon from '@mui/icons-material/Delete';

@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             try {
 
                 const response = await AutheticationInfo.getInfo();
+
                 if (!response.data) {
                     alert("Bạn chưa đăng nhập")
                 }

@@ -13,6 +13,11 @@ import type { ShelfSectionRequest } from "../request/Warehouse/ShelfSectionReque
 import type { BookImportRequest } from "../request/Warehouse/BookImportRequest";
 import type { BookFileRequest } from "../request/BookFileRequest";
 import type { BookItemRequest } from "../request/BookItemRequest";
+import type { RegisterRequest } from "../request/RegisterRequest";
+import type { ConfirmOTPRequest } from "../request/ConfirmOTPRequest";
+import type { BorrowingRequest } from "../request/BorrowingRequest";
+import type { ReplyBorrowingRequest } from "../request/ReplyBorrowingRequest";
+import type { BookPickupScheduleRequest } from "../request/BookPickupScheduleRequest";
 
 const axiosConfig = axiosClient();
 
@@ -237,8 +242,8 @@ export const BookImportWarehouseApi = {
         const response = await axiosConfig.post(`/api/Book/UpdateBook/${id}`, data)
         return response.data;
     },
-    getBookImportById: async (id: string) => {
-        const response = await axiosConfig.get(`/api/Book/GetBookById/${id}`)
+    getBookImportBySlug: async (slug: string) => {
+        const response = await axiosConfig.get(`/api/Book/GetBookBySlug/${slug}`)
         return response;
     },
     deleteBookImport: async (id: string) => {
@@ -281,34 +286,92 @@ export const BookImportTransactionWarehouseApi = {
 }
 
 export const BookItemApi = {
-    addBookItem: async (data: BookItemRequest) => {
-        const response = await axiosConfig.post(`/api/BookItem/AddBookItem`, data);
-        return response.data;
-    },
-    getAllBookItem: async () => {
-        const response = await axiosConfig.get(`/api/BookItem/GetAllBookItem`)
-        return response.data;
-    },
-    updateBookItem: async (id: string, data: BookItemRequest) => {
-        const response = await axiosConfig.post(`/api/BookItem/UpdateBookItem/${id}`, data)
-        return response.data;
-    },
-    getItemById: async (id: string) => {
-        const response = await axiosConfig.get(`/api/BookItem/UpdateBookItem/${id}`)
-        return response;
-    },
-    deleteItem: async (id: string) => {
-        const response = await axiosConfig.post(`/api/BookItem/DeleteBookItem/${id}`)
-        return response;
+    ChooseBookItem: async (bookId: string) => {
+        const response = await axiosConfig.get(`/api/BookItem/ChooseBookItemByBookId/${bookId}`)
+        return response
     }
 }
+
+export const BookCartItem = {
+    GetAllBookCartOfUser: async () => {
+        const response = await axiosConfig.get(`/api/BookCartItem/getAllBookCartOfUser`)
+        return response
+    }
+}
+
+export const Borrowing = {
+    createBorrowing: async (data: BorrowingRequest) => {
+        const response = await axiosConfig.post(`/api/Borrowing/createBorrowing`, data)
+        return response.data
+    },
+    getAllUserBorrowing: async () => {
+        const response = await axiosConfig.get(`/api/Borrowing/getAllUserBorrowing`)
+        return response.data
+    },
+    getAllBorrowing: async () => {
+        const response = await axiosConfig.get(`/api/Borrowing/getAllBorrowing`)
+        return response.data
+    },
+    updateBorrowingStatus: async (id: string, status: ReplyBorrowingRequest) => {
+        const response = await axiosConfig.post(`/api/Borrowing/updateBorrowing/${id}`, status)
+        return response.data
+    }
+}
+
+export const NotificationToUser = {
+    getAllNotifications: async () => {
+        const response = await axiosConfig.get(`/api/NotificationToUser/getAllNotifications`)
+        return response.data
+    },
+    readNotification: async (NotificationId: string) => {
+        const response = await axiosConfig.post(`/api/NotificationToUser/readnotification/${NotificationId}`)
+        return response
+    }
+}
+
+export const BorrowingDetail = {
+    getBorrowingDetails: async (borrowingId: string) => {
+        const response = await axiosConfig.get(`/api/BorrowingDetail/getBorrowingDetails/${borrowingId}`)
+        return response
+    }
+}
+
+export const BookPickupSchedule = {
+    createSchedule: async (data: BookPickupScheduleRequest) => {
+        const response = await axiosConfig.post(`/api/BookPickupSchedule/createSchedule`, data)
+        return response.data
+    },
+    getScheduleByBorrowingId: async (borrowingId: string) => {
+        const response = await axiosConfig.get(`/api/BookPickupSchedule/getScheduledByBorrowingId/${borrowingId}`)
+        return response
+    },
+    deleteScheduled: async (borrowingId: string) => {
+        const response = await axiosConfig.post(`/api/BookPickupSchedule/deleteScheduled/${borrowingId}`)
+        return response.data
+    }
+}
+
 
 export const Authetication = {
     login: async (data: LoginRequest) => {
         const response = await axiosConfig.post(`/api/Authentication/Login`, data);
         return response.data;
+    },
+    register: async (data: RegisterRequest) => {
+        const response = await axiosConfig.post(`/api/Authentication/Register`, data)
+        return response.data
+    },
+    confirmOTP: async (data: ConfirmOTPRequest) => {
+        const response = await axiosConfig.post(`/api/Authentication/ConfirmOtp`, data)
+        return response.data
+    },
+    logout: async () => {
+        const response = await axiosConfig.post(`/api/Authentication/Logout`)
+        return response.data
     }
 }
+
+
 
 
 export const AutheticationInfo = {

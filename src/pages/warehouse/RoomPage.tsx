@@ -6,15 +6,14 @@ import AddIcon from '@mui/icons-material/Add';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import type { FloorRequest } from '../../request/Warehouse/FloorRequest';
+import type { RoomRequest } from '../../request/Warehouse/RoomRequest';
 import type { FloorResponse } from '../../response/Warehouse/FloorResponse';
 import { FloorWarehouseApi, RoomWarehouseApi } from '../../apis';
-import FloorTable from '../../layout/warehouse/FloorTable';
-import MainLayout from '../../layout/MainLayout';
-import type { RoomRequest } from '../../request/Warehouse/RoomRequest';
-import AddRoomForm from '../../layout/warehouse/AddRoomForm';
 import type { RoomResponse } from '../../response/Warehouse/RoomResponse';
+import MainLayout from '../../layout/mainLayout/MainLayout';
+import AddRoomForm from '../../layout/warehouse/AddRoomForm';
 import RoomTable from '../../layout/warehouse/RoomTable';
+
 
 export const RoomPage = () => {
     //add

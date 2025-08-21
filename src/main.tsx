@@ -8,12 +8,14 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { AuthProvider } from './pages/Authentication/AuthProvider.tsx';
+import { SignalRProvider } from './context/SignalRContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-
-      <App />
+      <SignalRProvider>
+        <App />
+      </SignalRProvider>
     </AuthProvider>
   </StrictMode>,
 )

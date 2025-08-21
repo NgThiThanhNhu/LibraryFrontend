@@ -4,11 +4,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { ShelfSectionWarehouseApi, ShelfWarehouseApi } from '../../apis';
-import MainLayout from '../../layout/MainLayout';
-import type { ShelfResponse } from '../../response/Warehouse/ShelfResponse';
 import type { ShelfSectionRequest } from '../../request/Warehouse/ShelfSectionRequest';
+import type { ShelfResponse } from '../../response/Warehouse/ShelfResponse';
+import { ShelfSectionWarehouseApi, ShelfWarehouseApi } from '../../apis';
 import type { ShelfSectionResponse } from '../../response/Warehouse/ShelfSectionResponse';
+import MainLayout from '../../layout/mainLayout/MainLayout';
 import AddShelfSectionForm from '../../layout/warehouse/AddShelfSectionForm';
 import ShelfSectionTable from '../../layout/warehouse/ShelfSectionTable';
 

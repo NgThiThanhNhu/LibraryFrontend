@@ -12,7 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import EditIcon from '@mui/icons-material/Edit';
 
-import MainLayout from '../layout/MainLayout';
+import MainLayout from '../layout/mainLayout/MainLayout';
 import { PublisherApi } from '../apis';
 
 

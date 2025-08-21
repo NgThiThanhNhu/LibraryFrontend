@@ -1,10 +1,12 @@
-import { Box, Button, Icon, IconButton, InputAdornment, Paper, TextField, Typography } from '@mui/material'
+import { Box, Button, IconButton, InputAdornment, Paper, TextField, Typography } from '@mui/material'
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from 'react'
-
 import { Authetication } from '../../apis';
 import type { LoginRequest } from '../../request/LoginRequest';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import loginBg from '../../assets/loginBg.jpg'
+
+
 
 export const AuthenticationPage = () => {
     const initialLogin: LoginRequest = {
@@ -16,6 +18,11 @@ export const AuthenticationPage = () => {
     const [usernameError, setUsernameError] = useState<string>("")
     const [passwordError, setPasswordError] = useState<string>("")
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState<boolean>(false)
+
+    const handleToggleVisibility = () => {
+        setShowPassword((prev) => !prev)
+    }
 
     const onhandleLogin = async () => {
         try {
@@ -32,18 +39,27 @@ export const AuthenticationPage = () => {
                 return;
             }
             const response = await Authetication.login(login);
-            console.log(response)
-            if (!response.isSuccess && response.message.includes("tài khoản")) {
-                setUsernameError("Tài khoản không tồn tại")
-                return
-            } else if (!response.isSuccess && response.message.includes("Mật khẩu")) {
-                setPasswordError("Mật khẩu không đúng")
-                return
+            if (response.isSuccess) {
+                if (response.data.roleName == "admin") {
+                    navigate('/admin/publisher')
+                }
+                else {
+
+                    console.log(response.data)
+                    navigate("/user/books");
+                }
+            } else {
+                if (response.message == "Tài khoản không tồn tại") {
+                    setUsernameError("Tài khoản không tồn tại")
+                    return
+                }
+                if (response.message == "Mat khau khong chinh xac") {
+                    setPasswordError("Mật khẩu không đúng")
+                    return
+                }
             }
-            navigate('/publisher')
         } catch (error) {
             alert('Đăng nhập thất bại!' + error);
-            console.log(error)
         }
     }
     return (
@@ -88,12 +104,19 @@ export const AuthenticationPage = () => {
                         <Typography sx={{ mb: 1 }}>Password</Typography>
                         <TextField
                             fullWidth
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             placeholder="Password"
                             value={login.password}
                             onChange={(e) => setLogin({ ...login, password: e.target.value })}
                             error={!!passwordError}
                             helperText={passwordError}
+                            InputProps={{
+                                endAdornment: (<InputAdornment position='end'>
+                                    <IconButton onClick={handleToggleVisibility} edge="end"> {
+                                        showPassword ? <VisibilityOff /> : <Visibility />
+                                    }</IconButton>
+                                </InputAdornment>)
+                            }}
                         />
                     </Box>
 
@@ -101,6 +124,9 @@ export const AuthenticationPage = () => {
                         <Button variant="contained" color="primary" onClick={onhandleLogin}>
                             Đăng nhập
                         </Button>
+                    </Box>
+                    <Box className="p-4">
+                        <p className="text-center">Chưa có tài khoản? <Link to="/register" className="text-blue-500 hover:underline">Đăng ký</Link></p>
                     </Box>
                 </Paper>
             </Box>

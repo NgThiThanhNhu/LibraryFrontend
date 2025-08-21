@@ -6,21 +6,19 @@ import AddIcon from '@mui/icons-material/Add';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
-
-import { AuthorApi, BookCategoryApi, BookChapterApi, BookImportWarehouseApi, PublisherApi } from '../../apis';
-
-import MainLayout from '../../layout/MainLayout';
-
-
 import type { BookImportRequest } from '../../request/Warehouse/BookImportRequest';
 import type { BookCategoryResponse } from '../../response/BookCategoryResponse';
 import type { BookChapterResponse } from '../../response/BookChapterResponse';
 import type { PublisherResponse } from '../../response/publisherResponse';
 import type { AuthorResponse } from '../../response/AuthorResponse';
+import { AuthorApi, BookCategoryApi, BookChapterApi, BookImportWarehouseApi, PublisherApi } from '../../apis';
 import type { BookImportResponse } from '../../response/Warehouse/BookImportResponse';
+import MainLayout from '../../layout/mainLayout/MainLayout';
 import AddBookImportForm from '../../layout/warehouse/AddBookImportForm';
 import BookImportTable from '../../layout/warehouse/BookImportTable';
+
+
+
 
 export const BookImportPage = () => {
     //add
@@ -32,8 +30,8 @@ export const BookImportPage = () => {
         quantity: null,
         unitPrice: null,
         categoryId: " ",
-        bookChapterId: " "
-
+        bookChapterId: " ",
+        description: ''
     }
     const [bookImportPage, setBookImportPage] = useState<BookImportRequest>(() => initialBookImport)
     const [bookImportPageDialogAdd, setBookImportPageDialogAdd] = useState<boolean>(false)
@@ -190,22 +188,7 @@ export const BookImportPage = () => {
     //getbyid
     const [dialogGetById, setDialogGetById] = useState<boolean>(false)
     const [bookImportId, setBookImportId] = useState<string>('');
-    const [bookImportGetById, setBookImportGetById] = useState<BookImportResponse>({
-        id: " ",
-        title: " ",
-        bookAuthorId: " ",
-        authorName: " ",
-        publisherId: " ",
-        publisherName: " ",
-        yearPublished: null,
-        quantity: null,
-        totalPrice: null,
-        unitPrice: null,
-        categoryId: " ",
-        categoryName: " ",
-        bookChapterId: " ",
-        titleBookChapter: " ",
-    })
+    const [bookImportGetById, setBookImportGetById] = useState<BookImportResponse>()
     const [box, setBox] = useState<boolean>(false)
 
     const onOpenLogGetById = () => {
@@ -224,21 +207,21 @@ export const BookImportPage = () => {
             return;
         }
 
-        try {
-            const response = await BookImportWarehouseApi.getBookImportById(bookImportId);
-            console.log(response);
+        // try {
+        //     const response = await BookImportWarehouseApi.getBookImportById(bookImportId);
+        //     console.log(response);
 
-            if (response.data.data.id == bookImportId) {
-                alert('Lấy dữ liệu thành công' + response);
-                setBookImportGetById(response.data.data)
-                setBox(true);
+        //     if (response.data.data.id == bookImportId) {
+        //         alert('Lấy dữ liệu thành công' + response);
+        //         setBookImportGetById(response.data.data)
+        //         setBox(true);
 
-            } else {
-                console.error('Id không tồn tại');
-            }
-        } catch (error) {
-            alert('Id không tồn tại' + error)
-        }
+        //     } else {
+        //         console.error('Id không tồn tại');
+        //     }
+        // } catch (error) {
+        //     alert('Id không tồn tại' + error)
+        // }
     }
 
     //delete
@@ -277,7 +260,7 @@ export const BookImportPage = () => {
         if (selectedBookImportIds.length === 1) {
             const selected = getAllBookImport.find(p => p.id === selectedBookImportIds[0])
             if (selected) {
-                setbookImportUpdate(selected) //đổ dữ liệu đang có từ hàng vào 
+                // setbookImportUpdate(selected) //đổ dữ liệu đang có từ hàng vào 
 
                 setLogUpdate(true)
             }

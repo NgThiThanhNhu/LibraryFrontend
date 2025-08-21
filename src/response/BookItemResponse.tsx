@@ -5,10 +5,11 @@ export interface BookItemResponse {
     authorName: string,
     publisherName: string,
     yearPublished: 0,
-    quantity: 0,
-    unitPrice: 0,
-    bookStatus: 0,
+    unitPrice: number | null,
+    bookStatus: number | null,
     categoryName: string,
     titleBookChapter: string,
-    bookId: string
+    shelfSectionName: string,
+    imageUrl: string[]
+
 }
