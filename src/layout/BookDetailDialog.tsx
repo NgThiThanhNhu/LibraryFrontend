@@ -19,6 +19,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import type { BorrowingDetailResponse } from "../response/BorrowingDetailResponse";
 import type { BookPickupScheduledResponse } from "../response/BookPickupScheduledResponse";
 import { BookPickupSchedule } from "../apis";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type Props = {
     open: boolean;
@@ -46,7 +51,15 @@ export const BookDetailDialog = ({ open, onClose, borrowingId, detail }: Props) 
             setLoadingSchedule(true);
             try {
                 const response = await BookPickupSchedule.getScheduleByBorrowingId(borrowingId);
-                setSchedule(response.data.data);
+                const data = response.data.data;
+
+                // Convert UTC -> VN khi nhận từ BE
+                const converted = {
+                    ...data,
+                    scheduledPickupDate: dayjs.utc(data.scheduledPickupDate).tz("Asia/Ho_Chi_Minh").toDate(),
+                    expiredPickupDate: dayjs.utc(data.expiredPickupDate).tz("Asia/Ho_Chi_Minh").toDate(),
+                };
+                setSchedule(converted);
             } catch (error) {
                 alert("Lỗi: " + error);
             } finally {
@@ -55,16 +68,10 @@ export const BookDetailDialog = ({ open, onClose, borrowingId, detail }: Props) 
         };
         fetchSchedule();
     }, [open, borrowingId]);
-
-    const formatDateTime = (dateStr: Date | string) =>
-        new Date(dateStr).toLocaleString("vi-VN", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-        });
+    const formatDateTime = (date?: string | Date | null) => {
+        if (!date) return "";
+        return dayjs(date).format("DD/MM/YYYY HH:mm"); // Giờ VN
+    };
 
     return (
         <Dialog

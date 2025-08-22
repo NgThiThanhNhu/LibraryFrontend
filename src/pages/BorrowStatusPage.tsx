@@ -5,11 +5,17 @@ import BorrowTable from '../layout/BorrowTable';
 import type { StatusType } from './BorrowAndManageWrapper';
 import type { BorrowingResponse } from '../response/BorrowingResponse';
 import { BookPickupSchedule, Borrowing } from '../apis';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import utc from "dayjs/plugin/utc";
+import tz from "dayjs/plugin/timezone";
 import type { BookPickupScheduleRequest } from '../request/BookPickupScheduleRequest';
 import { useNavigate } from 'react-router-dom';
+
+dayjs.extend(utc)
+dayjs.extend(tz)
+dayjs.tz.setDefault("Asia/Ho_Chi_Minh")
 interface BorrowStatusProps {
     bookItems: {
         id: number;
@@ -67,6 +73,15 @@ const BorrowStatusPage: React.FC<BorrowStatusProps> = () => {
     const handlePickupSchedule = async () => {
         try {
             if (!schedule.expiredPickupDate || !schedule.scheduledPickupDate) return alert("Vui lòng chọn đủ ngày bắt đầu và ngày kết thúc")
+            const payload = {
+                borrowingId: schedule.borrowingId,
+                scheduledDateTime: schedule.scheduledPickupDate
+                    ? dayjs(schedule.scheduledPickupDate).tz("Asia/Ho_Chi_Minh").utc().toISOString()
+                    : null,
+                scheduleExpired: schedule.expiredPickupDate ? dayjs(schedule.expiredPickupDate).tz("Asia/Ho_Chi_Minh").utc().toISOString()
+                    : null
+            }
+            console.log("Payload gửi backend:", payload);
             const response = await BookPickupSchedule.createSchedule(schedule)
             setSchedule(schedule)
             setReload(true)
@@ -75,6 +90,7 @@ const BorrowStatusPage: React.FC<BorrowStatusProps> = () => {
                 navigate(`/admin/borrow-manage`)
             }
             setLogOpenSchedule(false);
+            console.log(response)
         } catch (error) {
             console.log(error)
         }
@@ -151,22 +167,40 @@ const BorrowStatusPage: React.FC<BorrowStatusProps> = () => {
                         <DatePicker
                             label="Ngày bắt đầu"
                             value={schedule.scheduledPickupDate ? dayjs(schedule.scheduledPickupDate) : null}
-                            onChange={(newValue) =>
-                                setSchedule({
-                                    ...schedule,
-                                    scheduledPickupDate: newValue ? newValue.toDate() : null,
-                                })
-                            }
+                            onChange={(newValue) => {
+                                if (newValue) {
+                                    const now = dayjs(); // giờ hiện tại
+                                    const merged = newValue
+                                        .hour(now.hour())
+                                        .minute(now.minute())
+                                        .second(now.second());
+                                    setSchedule({
+                                        ...schedule,
+                                        scheduledPickupDate: merged.toDate(),
+                                    });
+                                } else {
+                                    setSchedule({ ...schedule, scheduledPickupDate: null });
+                                }
+                            }}
                         />
                         <DatePicker
                             label="Ngày kết thúc"
                             value={schedule.expiredPickupDate ? dayjs(schedule.expiredPickupDate) : null}
-                            onChange={(newValue) =>
-                                setSchedule({
-                                    ...schedule,
-                                    expiredPickupDate: newValue ? newValue.toDate() : null,
-                                })
-                            }
+                            onChange={(newValue) => {
+                                if (newValue) {
+                                    const now = dayjs(); // giờ hiện tại
+                                    const merged = newValue
+                                        .hour(now.hour())
+                                        .minute(now.minute())
+                                        .second(now.second());
+                                    setSchedule({
+                                        ...schedule,
+                                        expiredPickupDate: merged.toDate(),
+                                    });
+                                } else {
+                                    setSchedule({ ...schedule, expiredPickupDate: null });
+                                }
+                            }}
                         />
                     </DialogContent>
                     <DialogActions>
