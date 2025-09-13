@@ -123,6 +123,14 @@ const BorrowTable: React.FC<BorrowTableProps> = ({
                                 >
                                     Ngày Lấy Sách
                                 </Button>
+                                <Button
+                                    size="small"
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() => onReject(row)}
+                                >
+                                    Hủy
+                                </Button>
                             </>
                         )}
                         {status === 'Đã Hẹn Lịch' && (
