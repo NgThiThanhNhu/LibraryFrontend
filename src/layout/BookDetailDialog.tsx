@@ -52,14 +52,14 @@ export const BookDetailDialog = ({ open, onClose, borrowingId, detail }: Props) 
             try {
                 const response = await BookPickupSchedule.getScheduleByBorrowingId(borrowingId);
                 const data = response.data.data;
-
-                // Convert UTC -> VN khi nhận từ BE
-                const converted = {
-                    ...data,
-                    scheduledPickupDate: dayjs.utc(data.scheduledPickupDate).tz("Asia/Ho_Chi_Minh").toDate(),
-                    expiredPickupDate: dayjs.utc(data.expiredPickupDate).tz("Asia/Ho_Chi_Minh").toDate(),
-                };
-                setSchedule(converted);
+                if (data != null) {
+                    const converted = {
+                        ...data,
+                        scheduledPickupDate: dayjs.utc(data.scheduledPickupDate).tz("Asia/Ho_Chi_Minh").toDate(),
+                        expiredPickupDate: dayjs.utc(data.expiredPickupDate).tz("Asia/Ho_Chi_Minh").toDate(),
+                    };
+                    setSchedule(converted);
+                }
             } catch (error) {
                 alert("Lỗi: " + error);
             } finally {
@@ -171,53 +171,57 @@ export const BookDetailDialog = ({ open, onClose, borrowingId, detail }: Props) 
                 </Box>
 
                 <Divider />
-
-                {detail.some((b) => b.isScheduled) && (
-                    <Fade in timeout={500}>
-                        <Box
-                            sx={{
-                                borderRadius: 3,
-                                p: 3,
-                                bgcolor: "#f9fcff",
-                                border: "1px solid #cfe8fc",
-                                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                                "&:hover": {
-                                    transform: "translateY(-4px)",
-                                    boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-                                },
-                            }}
-                        >
-                            <Typography
-                                variant="h6"
-                                sx={{ mb: 2, fontWeight: "bold", color: "#1565c0" }}
-                            >
-                                Lịch hẹn lấy sách
-                            </Typography>
-
-                            {loadingSchedule ? (
-                                <CircularProgress size={28} />
-                            ) : schedule ? (
-                                <Box display="flex" flexDirection="column" gap={1.5}>
-                                    <Typography>
-                                        ⏰ Từ: <b>{formatDateTime(schedule.scheduledPickupDate)}</b>
+                <div>
+                    {
+                        detail.some((b) => b.isScheduled) ? (
+                            <Fade in timeout={500}>
+                                <Box
+                                    sx={{
+                                        borderRadius: 3,
+                                        p: 3,
+                                        bgcolor: "#f9fcff",
+                                        border: "1px solid #cfe8fc",
+                                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                                        "&:hover": {
+                                            transform: "translateY(-4px)",
+                                            boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+                                        },
+                                    }}
+                                >
+                                    <Typography
+                                        variant="h6"
+                                        sx={{ mb: 2, fontWeight: "bold", color: "#1565c0" }}
+                                    >
+                                        Lịch hẹn lấy sách
                                     </Typography>
-                                    <Typography>
-                                        ⏳ Đến: <b>{formatDateTime(schedule.expiredPickupDate)}</b>
-                                    </Typography>
-                                    <Typography>👨‍🏫 Thủ thư: {schedule.librarianName}</Typography>
-                                    <Typography>👤 Người nhận: {schedule.userName}</Typography>
-                                    <Chip
-                                        label={schedule.isPickedUp ? "✅ Đã đến lấy đơn" : "⌛ Chưa đến nhận đơn"}
-                                        color={schedule.isPickedUp ? "success" : "warning"}
-                                        sx={{ mt: 1, alignSelf: "flex-start", fontWeight: "bold" }}
-                                    />
+
+                                    {loadingSchedule ? (
+                                        <CircularProgress size={28} />
+                                    ) : schedule ? (
+                                        <Box display="flex" flexDirection="column" gap={1.5}>
+                                            <Typography>
+                                                ⏰ Từ: <b>{formatDateTime(schedule.scheduledPickupDate)}</b>
+                                            </Typography>
+                                            <Typography>
+                                                ⏳ Đến: <b>{formatDateTime(schedule.expiredPickupDate)}</b>
+                                            </Typography>
+                                            <Typography>👨‍🏫 Thủ thư: {schedule?.librarianName}</Typography>
+                                            <Typography>👤 Người nhận: {schedule?.userName}</Typography>
+                                            <Chip
+                                                label={schedule?.isPickedUp ? "✅ Đã đến lấy đơn" : "⌛ Chưa đến nhận đơn"}
+                                                color={schedule?.isPickedUp ? "success" : "warning"}
+                                                sx={{ mt: 1, alignSelf: "flex-start", fontWeight: "bold" }}
+                                            />
+                                        </Box>
+                                    ) : (
+                                        <Typography color="text.secondary">Chưa có lịch hẹn</Typography>
+                                    )}
                                 </Box>
-                            ) : (
-                                <Typography color="text.secondary">Chưa có lịch hẹn</Typography>
-                            )}
-                        </Box>
-                    </Fade>
-                )}
+                            </Fade>
+                        ) : "Chưa có lịch hẹn"
+
+                    }
+                </div>
             </DialogContent>
         </Dialog>
     );
