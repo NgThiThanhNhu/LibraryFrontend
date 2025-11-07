@@ -34,28 +34,28 @@ export const BookDetailPage = () => {
     const { slug } = useParams();
     const [bookDetail, setBookDetail] = useState<BookImportResponse>(() => initialBookDetail)
     const [bookitem, setBookItem] = useState<BookItemResponse>()
+    const [fileUrl, setFileUrl] = useState<string[]>([])
+    const onHandleReadOnline = (bookDetail: BookImportResponse) => {
+        if (!bookDetail.fileUrls || bookDetail.fileUrls.length === 0) {
+            alert("Sách này chưa có file đọc online!");
+            return;
+        }
+        window.open(bookDetail.fileUrls[0], "_blank");
+    };
 
     useEffect(() => {
         const fetchData = async () => {
-
-
             const response = await BookImportWarehouseApi.getBookImportBySlug(slug!);
             console.log(response)
             if (!response.data.isSuccess) {
                 alert('không kết nối slug được')
             }
             setBookDetail(response.data.data)
-
         }
         fetchData();
     }, [slug])
-
-
-
-
     return (
         <MainLayoutUser>
-
             <Container className="py-10">
                 <Box className="bg-white shadow-xl rounded-2xl p-6 md:p-10 space-y-6">
 
@@ -93,7 +93,7 @@ export const BookDetailPage = () => {
 
                             <Box className="pt-4 flex gap-4 flex-wrap">
                                 <ChooseBookItem bookId={bookDetail.id} onChose={(bookItem) => setBookItem(bookItem)} />
-                                <Button variant="outlined" color="secondary">
+                                <Button variant="outlined" color="secondary" onClick={() => onHandleReadOnline(bookDetail)}>
                                     Đọc online
                                 </Button>
                             </Box>
