@@ -92,7 +92,9 @@ const MyBookListPage: React.FC = () => {
                                             />
                                         }
                                     >
-                                        <div className="w-20 h-28 bg-gray-200 rounded-lg mr-4 flex-shrink-0"></div>
+                                        <div>
+                                            <img src={item.imageUrls?.[0]} className="w-20 h-28 bg-gray-200 rounded-lg mr-4 flex-shrink-0"></img>
+                                        </div>
 
                                         <div className="flex-1 space-y-1">
                                             <p className="text-lg font-semibold text-gray-800">{item.bookItemTitle}</p>
