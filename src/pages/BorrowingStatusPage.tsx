@@ -61,7 +61,7 @@ const BorrowingStatusPage = () => {
 
     const handleOpenDialog = async (borrowingId: string) => {
         try {
-            const response = await BorrowingDetail.getBorrowingDetails(borrowingId);
+            const response = await BorrowingDetail.getBorrowingDetailsForUser(borrowingId);
             setSelectedBorrowingId(borrowingId);
             setSelectedBorrowingDetails(response.data.data);
             console.log(response)
