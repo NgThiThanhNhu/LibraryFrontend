@@ -7,31 +7,33 @@ import type { BorrowingResponse } from '../response/BorrowingResponse';
 interface BorrowTableProps {
     data: BorrowingResponse[];
     reload: boolean
-    // onOpenFineDialog: (type: 'Trễ hạn' | 'Hư hỏng', row: BorrowingResponse) => void;
+    onOpenFineDialog: (row: BorrowingResponse) => void;
     // onOpenDetailDialog: (row: BorrowingResponse) => void;
     // onOpenExtendDialog: (row: BorrowingResponse) => void;
     // onOpenReminderDialog: (row: BorrowingResponse) => void;
-    // onConfirmReturn: (row: BorrowingResponse) => void;
+    onConfirmReturn: (row: BorrowingResponse) => void;
     onApprove: (row: BorrowingResponse) => void;
     onReject: (row: BorrowingResponse) => void;
     onPickupSchedule: (row: BorrowingResponse) => void;
     onCancel: (row: BorrowingResponse) => void;
-    onBorrowing: (row: BorrowingResponse) => void
+    onBorrowing: (row: BorrowingResponse) => void;
+    onHandleOverDue: (row: BorrowingResponse) => void
 }
 
 const BorrowTable: React.FC<BorrowTableProps> = ({
     data,
     reload,
-    // onOpenFineDialog,
+    onOpenFineDialog,
     // onOpenDetailDialog,
     // onOpenExtendDialog,
     // onOpenReminderDialog,
-    // onConfirmReturn,
+    onConfirmReturn,
     onApprove,
     onReject,
     onPickupSchedule,
     onCancel,
     onBorrowing,
+    onHandleOverDue
 }) => {
     const columns: GridColDef[] = [
         { field: 'id', headerName: 'Id phiếu mượn', flex: 1 },
@@ -41,6 +43,14 @@ const BorrowTable: React.FC<BorrowTableProps> = ({
         { field: 'userName', headerName: 'Người yêu cầu', flex: 1 },
         { field: 'librarianName', headerName: 'Thủ thư thực hiện', flex: 1 },
         { field: 'replyDate', headerName: 'Ngày phản hồi', flex: 1 },
+        {
+            field: 'isReminded', headerName: 'Nhắc đến hạn', flex: 1,
+            renderCell: (params) => (
+                params.row.isReminded
+                    ? <span style={{ color: 'green', fontWeight: 600 }}>Đã nhắc đến hạn</span>
+                    : <span style={{ color: 'red', fontWeight: 600 }}>Chưa nhắc đến hạn</span>
+            )
+        },
         {
             field: 'status',
             headerName: 'Trạng thái',
@@ -153,10 +163,8 @@ const BorrowTable: React.FC<BorrowTableProps> = ({
                                 </Button>
                             </>
                         )}
-                        {/* Đã Duyệt: không hiển thị hành động gì (đợi chuyển sang Đang Mượn) */}
 
-                        {/* Đang Mượn */}
-                        {/* {status === 'Đang Mượn' && (
+                        {status === 'Đang Mượn' && (
                             <>
                                 <Button
                                     size="small"
@@ -166,38 +174,38 @@ const BorrowTable: React.FC<BorrowTableProps> = ({
                                 >
                                     Trả sách
                                 </Button>
-                                <Button
+                                {/* <Button
                                     size="small"
                                     variant="outlined"
                                     color="warning"
                                     onClick={() => onOpenExtendDialog(row)}
                                 >
                                     Gia hạn
-                                </Button>
-                            </> */}
-                        {/* )} */}
-
-                        {/* Đã quá hạn */}
-                        {/* {status === 'Đã quá hạn' && (
-                            <>
+                                </Button> */}
                                 <Button
                                     size="small"
                                     variant="outlined"
-                                    color="error"
-                                    onClick={() => onOpenReminderDialog(row)}
+                                    color="warning"
+                                    onClick={() => onHandleOverDue(row)}
                                 >
-                                    Nhắc nhở
+                                    Quá hạn
                                 </Button>
+                            </>
+                        )}
+
+                        {/* Đã quá hạn */}
+                        {status === 'Đã quá hạn' && (
+                            <>
                                 <Button
                                     size="small"
                                     variant="contained"
                                     color="error"
-                                    onClick={() => onOpenFineDialog('Trễ hạn', row)}
+                                    onClick={() => onOpenFineDialog(row)}
                                 >
-                                    Nộp phạt
+                                    Xem Chi Tiết
                                 </Button>
                             </>
-                        )} */}
+                        )}
 
                         {/* Hư hỏng */}
                         {/* {status === 'Hư hỏng' && (
