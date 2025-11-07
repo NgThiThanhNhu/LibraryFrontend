@@ -1,0 +1,41 @@
+.FineReasonContainer {
+    display: flex;
+    align-items: center;
+}
+
+.groupFineReason {
+    display: flex;
+
+}
+
+.fineReasonItem {
+    border: 1px solid rgb(156 163 175);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition-property: all;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    margin-left: 30px;
+    width: 90px;
+    height: 40px;
+    text-align: center;
+    padding: 8px;
+}
+
+.fineReasonSelected {
+    border: 1px solid rgb(239 68 68);
+    color: rgb(220 38 38);
+    background-color: rgb(254 242 242);
+}
+
+.fineReasonUnselected {
+    border: 1px solid rgb(209 213 219);
+    color: rgb(55 65 81);
+}
+
+.fineReasonUnselected:hover {
+    border-color: rgb(156 163 175);
+}
