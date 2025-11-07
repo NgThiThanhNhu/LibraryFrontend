@@ -35,14 +35,10 @@ const HomePage: React.FC = () => {
                         {books.map((book) => (
 
                             <BookCard key={book.id} bookInformation={book} />
-
-
                         ))}
                     </div>
                 )}
             </div>
-
-
         </MainLayoutGuest >
     );
 };
