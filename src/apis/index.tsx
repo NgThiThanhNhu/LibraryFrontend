@@ -18,6 +18,7 @@ import type { ConfirmOTPRequest } from "../request/ConfirmOTPRequest";
 import type { BorrowingRequest } from "../request/BorrowingRequest";
 import type { ReplyBorrowingRequest } from "../request/ReplyBorrowingRequest";
 import type { BookPickupScheduleRequest } from "../request/BookPickupScheduleRequest";
+import type { FineRequest } from "../request/FineRequest";
 
 const axiosConfig = axiosClient();
 
@@ -330,8 +331,12 @@ export const NotificationToUser = {
 }
 
 export const BorrowingDetail = {
-    getBorrowingDetails: async (borrowingId: string) => {
-        const response = await axiosConfig.get(`/api/BorrowingDetail/getBorrowingDetails/${borrowingId}`)
+    getBorrowingDetailsForUser: async (borrowingId: string) => {
+        const response = await axiosConfig.get(`/api/BorrowingDetail/borrowings/${borrowingId}/details/user`)
+        return response
+    },
+    getBorrowingDetailForFine: async (borrowingId: string) => {
+        const response = await axiosConfig.get(`/api/BorrowingDetail/borrowings/${borrowingId}/details/fine`)
         return response
     }
 }
@@ -351,6 +356,12 @@ export const BookPickupSchedule = {
     }
 }
 
+export const FineApi = {
+    createFine: async (borrowingDetailId: string, data: FineRequest[]) => {
+        const response = await axiosConfig.post(`/api/Fine/createFine?borrowingDetailId=${borrowingDetailId}`, data)
+        return response.data
+    }
+}
 
 export const Authetication = {
     login: async (data: LoginRequest) => {
@@ -370,9 +381,6 @@ export const Authetication = {
         return response.data
     }
 }
-
-
-
 
 export const AutheticationInfo = {
     getInfo: async () => {
