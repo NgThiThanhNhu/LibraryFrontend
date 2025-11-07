@@ -5,6 +5,8 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import HistoryIcon from '@mui/icons-material/History';
+import { Link } from "react-router-dom";
+
 
 interface Props {
     isOpen: boolean;
@@ -28,10 +30,10 @@ export default function Sidebar({ isOpen }: Props) {
             <div className="p-4 text-lg font-bold">My Library</div>
             <ul className="space-y-2 p-4 text-base">
                 <li>
-                    <a href="/" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <Link to="/" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaHome className="text-lg" />
                         Dashboard
-                    </a>
+                    </Link>
                 </li>
 
                 {/* Books */}
@@ -46,13 +48,13 @@ export default function Sidebar({ isOpen }: Props) {
                     {isBooksOpen && (
                         <ul className="mt-1 ml-4 space-y-1 text-sm">
                             <li>
-                                <a href="/admin/bookcategory" className="block px-4 py-1 hover:text-blue-400">Loại sách</a>
+                                <Link to="/admin/bookcategory" className="block px-4 py-1 hover:text-blue-400">Loại sách</Link>
                             </li>
                             <li>
-                                <a href="/admin/bookchapter" className="block px-4 py-1 hover:text-blue-400">Số tập</a>
+                                <Link to="/admin/bookchapter" className="block px-4 py-1 hover:text-blue-400">Số tập</Link>
                             </li>
                             <li>
-                                <a href="/admin/borrow-manage" className="block px-4 py-1 hover:text-blue-400">Quản lý cuốn sách và trạng thái phiếu mượn</a>
+                                <Link to="/admin/borrow-manage" className="block px-4 py-1 hover:text-blue-400">Quản lý cuốn sách và trạng thái phiếu mượn</Link>
                             </li>
                         </ul>
                     )}
@@ -69,7 +71,7 @@ export default function Sidebar({ isOpen }: Props) {
                     {isBookOnline && (
                         <ul className="mt-1 ml-4 space-y-1 text-sm">
                             <li>
-                                <a href="/admin/bookonline" className="block px-4 py-1 hover:text-blue-400">Tải Sách</a>
+                                <Link to="/admin/bookonline" className="block px-4 py-1 hover:text-blue-400">Tải Sách</Link>
                             </li>
 
                         </ul>
@@ -78,18 +80,18 @@ export default function Sidebar({ isOpen }: Props) {
 
                 {/* Authors */}
                 <li>
-                    <a href="/admin/author" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <Link to="/admin/author" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaUsers className="text-lg" />
                         Book Authors
-                    </a>
+                    </Link>
                 </li>
 
                 {/* Publishers */}
                 <li>
-                    <a href="/admin/publisher" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <Link to="/admin/publisher" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaUsers className="text-lg" />
                         Publishers
-                    </a>
+                    </Link>
                 </li>
 
                 {/* Trạng thái */}
@@ -114,8 +116,8 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isStorageAreaOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/admin/bookimport" className="block px-4 py-1 hover:text-blue-400">Nhập sách</a></li>
-                                        <li><a href="/admin/bookexport" className="block px-4 py-1 hover:text-blue-400">Xuất sách</a></li>
+                                        <li><Link to="/admin/bookimport" className="block px-4 py-1 hover:text-blue-400">Nhập sách</Link></li>
+                                        <li><Link to="/admin/bookexport" className="block px-4 py-1 hover:text-blue-400">Xuất sách</Link></li>
                                     </ul>
                                 )}
                             </li>
@@ -130,8 +132,8 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isBookStatusOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/admin/borrow-manage" className="block px-4 py-1 hover:text-blue-400">Mượn - Trả </a></li>
-                                        <li><a href="/admin/bookreserve" className="block px-4 py-1 hover:text-blue-400">Đặt trước</a></li>
+                                        <li><Link to="/admin/borrow-manage" className="block px-4 py-1 hover:text-blue-400">Mượn - Trả </Link></li>
+                                        <li><Link to="/admin/bookreserve" className="block px-4 py-1 hover:text-blue-400">Đặt trước</Link></li>
                                     </ul>
                                 )}
                             </li>
@@ -160,11 +162,11 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isStorageAreaOpen && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/admin/warehouse/floor" className="block px-4 py-1 hover:text-blue-400">Tầng</a></li>
-                                        <li><a href="/admin/warehouse/room" className="block px-4 py-1 hover:text-blue-400">Phòng</a></li>
-                                        <li><a href="/admin/warehouse/bookshelf" className="block px-4 py-1 hover:text-blue-400">Tủ sách</a></li>
-                                        <li><a href="/admin/warehouse/shelf" className="block px-4 py-1 hover:text-blue-400">Kệ sách</a></li>
-                                        <li><a href="/admin/warehouse/shelfsection" className="block px-4 py-1 hover:text-blue-400">Ô sách</a></li>
+                                        <li><Link to="/admin/warehouse/floor" className="block px-4 py-1 hover:text-blue-400">Tầng</Link></li>
+                                        <li><Link to="/admin/warehouse/room" className="block px-4 py-1 hover:text-blue-400">Phòng</Link></li>
+                                        <li><Link to="/admin/warehouse/bookshelf" className="block px-4 py-1 hover:text-blue-400">Tủ sách</Link></li>
+                                        <li><Link to="/admin/warehouse/shelf" className="block px-4 py-1 hover:text-blue-400">Kệ sách</Link></li>
+                                        <li><Link to="/admin/warehouse/shelfsection" className="block px-4 py-1 hover:text-blue-400">Ô sách</Link></li>
                                     </ul>
                                 )}
                             </li>
@@ -174,10 +176,10 @@ export default function Sidebar({ isOpen }: Props) {
 
                 {/* Users */}
                 <li>
-                    <a href="/admin/manageusers" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <Link to="/admin/manageusers" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaUsers className="text-lg" />
                         Users
-                    </a>
+                    </Link>
                 </li>
                 <li>
                     <div
@@ -199,8 +201,8 @@ export default function Sidebar({ isOpen }: Props) {
                                 </div>
                                 {isImportHistory && (
                                     <ul className="mt-1 ml-4 space-y-1">
-                                        <li><a href="/admin/importtransaction" className="block px-4 py-1 hover:text-blue-400">Lịch sử nhập sách</a></li>
-                                        <li><a href="/admin/bookexporthistory" className="block px-4 py-1 hover:text-blue-400">Lịch sử xuất sách</a></li>
+                                        <li><Link to="/admin/importtransaction" className="block px-4 py-1 hover:text-blue-400">Lịch sử nhập sách</Link></li>
+                                        <li><Link to="/admin/bookexporthistory" className="block px-4 py-1 hover:text-blue-400">Lịch sử xuất sách</Link></li>
                                     </ul>
                                 )}
                             </li>
@@ -215,7 +217,7 @@ export default function Sidebar({ isOpen }: Props) {
                                 {isExportHistory && (
                                     <ul className="mt-1 ml-4 space-y-1">
 
-                                        <li><a href="/admin/bookexporthistory" className="block px-4 py-1 hover:text-blue-400">Lịch sử xuất sách</a></li>
+                                        <li><Link to="/admin/bookexporthistory" className="block px-4 py-1 hover:text-blue-400">Lịch sử xuất sách</Link></li>
                                     </ul>
                                 )}
                             </li>
@@ -224,10 +226,10 @@ export default function Sidebar({ isOpen }: Props) {
                 </li>
                 {/* Settings */}
                 <li>
-                    <a href="/settings" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
+                    <Link to="/settings" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
                         <FaCog className="text-lg" />
                         Settings
-                    </a>
+                    </Link>
                 </li>
             </ul>
         </div>
