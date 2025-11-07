@@ -7,7 +7,8 @@ export const AdminRoute = ({ children }: { children: ReactNode }) => {
     const { user, isLoading } = useAuth();
     console.log(user)
     if (isLoading) return <div>Loading...</div>;
-    if (!user || user.role !== "admin") return <Navigate to="/unauthorized" />;
-
+    if (user?.roleName !== "admin")
+        return <Navigate to={`/login`} />;
+    if (!user || user.roleName !== "admin") return <Navigate to="/unauthorized" />;
     return children;
 };

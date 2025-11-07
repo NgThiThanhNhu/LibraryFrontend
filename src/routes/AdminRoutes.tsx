@@ -5,9 +5,6 @@ import { AdminRoute } from "../route/AdminRoute"
 
 
 import ReserveBookPage from "../pages/ReserveBookPage"
-import BorrowStatusPage from "../pages/BorrowStatusPage"
-import BookExportBookPage from "../pages/BookExportPage"
-import ManageBookItemsPage from "../pages/ManageBookItemPage"
 import BorrowAndManageWrapper from "../pages/BorrowAndManageWrapper"
 import ExportHistoryPage from "../pages/BookExport"
 import ManageUsers from "../pages/ManageUser"
@@ -40,7 +37,6 @@ export const AdminRoutes = () => {
             <Route path="/bookimport" element={<AdminRoute><BookImportPage /> </AdminRoute>} />
             <Route path="/bookonline" element={<AdminRoute><BookFilePage /> </AdminRoute>} />
             <Route path="/importtransaction" element={<AdminRoute><BookImportTransactionPage /> </AdminRoute>} />
-
             <Route path="/bookreserve" element={<AdminRoute><ReserveBookPage /> </AdminRoute>} />
             <Route path="/bookexport" element={<AdminRoute><BookExportPage /> </AdminRoute>} />
             <Route path="/borrow-manage" element={<AdminRoute><BorrowAndManageWrapper /></AdminRoute>} />

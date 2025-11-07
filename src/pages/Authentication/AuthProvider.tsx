@@ -8,29 +8,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     useEffect(() => {
         const fetchDataInfo = async () => {
-
             try {
-
                 const response = await AutheticationInfo.getInfo();
-
-                if (!response.data) {
-                    alert("Bạn chưa đăng nhập")
-                }
-                setUserProvider(response.data)
-
+                setUserProvider(response?.data || null);
             } catch (error) {
-                alert("Lỗi" + error)
-                setUserProvider(null)
+                console.error("Lỗi khi lấy thông tin người dùng:", error);
+                setUserProvider(null);
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
-        }
+        };
         fetchDataInfo();
-
-    }, [])
+    }, []);
     return (
         <AuthContext.Provider value={{ user: userProvider, setUser: setUserProvider, isLoading }}>
-
             {children}
         </AuthContext.Provider>
     )

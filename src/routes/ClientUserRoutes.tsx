@@ -6,6 +6,7 @@ import BookListUserHomePage from "../pages/UserHomePage";
 import MyBookList from "../pages/MyBookList";
 import BorrowingStatusPage from "../pages/BorrowingStatusPage";
 import { BookDetailPage } from "../pages/BookDetailPage";
+import { UserRoute } from "../route/UserRoute";
 
 
 
@@ -15,11 +16,10 @@ import { BookDetailPage } from "../pages/BookDetailPage";
 export const ClientUserRoutes = () => {
     return (
         <Routes>
-            <Route path="/books" element={<BookListUserHomePage />} />
-            <Route path="/books/:slug" element={<BookDetailPage />} />
-            <Route path="/mybooklist" element={<MyBookList />} />
-            <Route path="/borrowingstatus" element={<BorrowingStatusPage />} />
-
+            <Route path="/books" element={<UserRoute><BookListUserHomePage /></UserRoute>} />
+            <Route path="/books/:slug" element={<UserRoute><BookDetailPage /></UserRoute>} />
+            <Route path="/mybooklist" element={<UserRoute><MyBookList /></UserRoute>} />
+            <Route path="/borrowingstatus" element={<UserRoute><BorrowingStatusPage /></UserRoute>} />
         </Routes>
     );
 };

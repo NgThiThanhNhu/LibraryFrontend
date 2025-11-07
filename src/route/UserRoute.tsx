@@ -7,7 +7,9 @@ export const UserRoute = ({ children }: { children: ReactNode }) => {
     const { user, isLoading } = useAuth();
 
     if (isLoading) return <div>Loading...</div>;
-    if (!user || user.role !== "user") return <Navigate to="/unauthorized" />;
+    if (user?.roleName !== "user")
+        return <Navigate to={`/login`} />;
+    if (!user || user.roleName !== "user") return <Navigate to="/unauthorized" />;
 
     return children;
 };

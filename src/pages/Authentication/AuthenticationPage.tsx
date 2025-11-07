@@ -5,6 +5,7 @@ import { Authetication } from '../../apis';
 import type { LoginRequest } from '../../request/LoginRequest';
 import { Link, useNavigate } from 'react-router-dom';
 import loginBg from '../../assets/loginBg.jpg'
+import { useAuth } from './AuthContext';
 
 
 
@@ -13,7 +14,7 @@ export const AuthenticationPage = () => {
         email: "",
         password: ""
     }
-
+    const { setUser } = useAuth();
     const [login, setLogin] = useState<LoginRequest>(() => initialLogin)
     const [usernameError, setUsernameError] = useState<string>("")
     const [passwordError, setPasswordError] = useState<string>("")
@@ -40,11 +41,11 @@ export const AuthenticationPage = () => {
             }
             const response = await Authetication.login(login);
             if (response.isSuccess) {
+                setUser(response.data)
                 if (response.data.roleName == "admin") {
                     navigate('/admin/publisher')
                 }
                 else {
-
                     console.log(response.data)
                     navigate("/user/books");
                 }
