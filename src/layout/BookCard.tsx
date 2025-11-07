@@ -12,16 +12,9 @@ interface BookCardProps {
 }
 
 const BookCard: React.FC<BookCardProps> = ({ bookInformation }) => {
-
     const navigate = useNavigate();
-
-
-
     const handleClick = async () => {
-
         navigate(`/user/books/${bookInformation.slug}`)
-
-
     };
 
 
@@ -38,7 +31,6 @@ const BookCard: React.FC<BookCardProps> = ({ bookInformation }) => {
                     alt={bookInformation.title}
                     className="object-cover"
                 />
-
                 <CardContent className="p-3 flex flex-col gap-1">
                     <Typography variant="h6" className="text-sm font-semibold text-gray-800 line-clamp-2 min-h-[3rem]">
                         {bookInformation.title}
