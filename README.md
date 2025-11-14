@@ -9,19 +9,18 @@ The frontend of this project is built with modern web technologies to ensure hig
 * **Custom CSS** – Additional styling to achieve fine‑tuned and unique UI elements.
 * **Material UI (MUI)** – A powerful UI component library with plenty of modern components and theme customization.
 
-## 🎨 UI & Styling
+## UI & Styling
 
 * TailwindCSS for responsive and utility‑driven styling.
 * Custom CSS for specific UI cases.
 * Material UI components where enhanced UX is required.
 
-## ⚛️ React + TypeScript + Vite Setup
-
+## React + TypeScript + Vite Setup
 * Supports fast refresh for a smooth development experience.
 * Efficient module handling and quick server startup.
 * TypeScript improves code reliability and reduces bugs.
 
-## 🚀 Getting Started
+## Getting Started
 
 To install dependencies:
 
@@ -35,7 +34,7 @@ To start the development server:
 npm run dev
 ```
 
-## 📦 Main Libraries & Tools
+## Main Libraries & Tools
 
 * **React Router** for navigation
 * **Axios or Fetch API** for backend communication
@@ -43,4 +42,3 @@ npm run dev
 * **TailwindCSS** for styling
 * **Vite** for building and bundling
 
----
