@@ -205,11 +205,11 @@ export const BookDetailDialog = ({ open, onClose, borrowingId, detail }: Props) 
                                             <Typography>
                                                 ⏳ Đến: <b>{formatDateTime(schedule.expiredPickupDate)}</b>
                                             </Typography>
-                                            <Typography>👨‍🏫 Thủ thư: {schedule?.librarianName}</Typography>
-                                            <Typography>👤 Người nhận: {schedule?.userName}</Typography>
+                                            <Typography>👨‍🏫 Thủ thư: {schedule.librarianName}</Typography>
+                                            <Typography>👤 Người nhận: {schedule.userName}</Typography>
                                             <Chip
-                                                label={schedule?.isPickedUp ? "✅ Đã đến lấy đơn" : "⌛ Chưa đến nhận đơn"}
-                                                color={schedule?.isPickedUp ? "success" : "warning"}
+                                                label={schedule.isPickedUp ? "✅ Đã đến lấy đơn" : "⌛ Chưa đến nhận đơn"}
+                                                color={schedule.isPickedUp ? "success" : "warning"}
                                                 sx={{ mt: 1, alignSelf: "flex-start", fontWeight: "bold" }}
                                             />
                                         </Box>
