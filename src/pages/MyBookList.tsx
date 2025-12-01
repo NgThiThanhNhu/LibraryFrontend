@@ -1,47 +1,55 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
-    Box, Typography, Checkbox, List, ListItem, Button, Divider,
+    Box, Typography, List, Button,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
     FormControl, InputLabel, Select, MenuItem, CircularProgress,
-    IconButton, Chip, Card, CardContent, Stack, Paper, Fade, Tooltip
+    IconButton, Chip, Card, CardContent, Stack, Paper, Fade, Tooltip,
+    Alert, Snackbar
 } from '@mui/material';
 import MainLayoutUser from '../layout/mainLayout/MainLayoutUser';
-import { BookCartItem, Borrowing } from '../apis';
-import type { BorrowingRequest } from '../request/BorrowingRequest';
-import type { BookCartTitleResponse } from '../response/BookCartTitleResponse';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
-import SortIcon from '@mui/icons-material/Sort';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useNavigate } from 'react-router-dom';
+import { BookCartApi, BookCartItemApi } from '../apis';
+import type { BookCartResponse } from '../response/BookCartResponse';
+import type { BookCartItemResponse } from '../response/BookCartItemResponse';
 
 const MyBookListPage: React.FC = () => {
-    const [cartItems, setCartItems] = useState<BookCartTitleResponse[]>([]);
-    const [selectedItems, setSelectedItems] = useState<BookCartTitleResponse[]>([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [duration, setDuration] = useState(7);
+    const navigate = useNavigate();
+    const [cart, setCart] = useState<BookCartResponse | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    type SortOption = 'newest' | 'oldest';
-    const [sortOrder, setSortOrder] = useState<SortOption>('oldest');
+    const [openCheckoutDialog, setOpenCheckoutDialog] = useState(false);
+    const [openClearDialog, setOpenClearDialog] = useState(false);
+    const [duration, setDuration] = useState(7);
+    const [snackbar, setSnackbar] = useState<{
+        open: boolean;
+        message: string;
+        severity: 'success' | 'error' | 'info';
+    }>({
+        open: false,
+        message: '',
+        severity: 'success',
+    });
 
     const fetchCart = async () => {
         setIsLoading(true);
         try {
-            const res = await BookCartItem.getAllBookCartOfUser();
-            if (res.isSuccess && res.data) {
-                setCartItems(res.data);
-                setSelectedItems((prev: BookCartTitleResponse[]) => {
-                    const fetchedBookIds = new Set(res.data.map((item: BookCartTitleResponse) => item.bookId));
-                    return prev.filter((item: BookCartTitleResponse) => fetchedBookIds.has(item.bookId));
-                });
+            const response = await BookCartApi.getBookCart();
+            if (response.isSuccess && response.data) {
+                setCart(response.data);
             } else {
-                setCartItems([]);
+                setCart(null);
+                showSnackbar(response.message || 'Không thể tải giỏ sách', 'error');
             }
-        } catch (error) {
-            console.error('Lỗi khi lấy giỏ sách:', error);
-            setCartItems([]);
+        } catch (error: any) {
+            console.error('Error fetching cart:', error);
+            showSnackbar('Có lỗi khi tải giỏ sách', 'error');
+            setCart(null);
         } finally {
             setIsLoading(false);
         }
@@ -51,168 +59,263 @@ const MyBookListPage: React.FC = () => {
         fetchCart();
     }, []);
 
-    const handleDecreaseQuantity = async (item: BookCartTitleResponse) => {
-        if (item.quantityBookCart <= 0) return;
-        if (item.quantityBookCart === 1) {
-            if (!window.confirm(`Bạn có chắc muốn xóa cuốn "${item.bookTitle}" khỏi giỏ?`)) {
+    const showSnackbar = (message: string, severity: 'success' | 'error' | 'info') => {
+        setSnackbar({ open: true, message, severity });
+    };
+
+    const handleIncreaseQuantity = async (item: BookCartItemResponse) => {
+        try {
+            const response = await BookCartItemApi.updateQuantity(item.bookCartItemId, { action: "increase" });
+            if (response.isSuccess) {
+                showSnackbar('Đã tăng số lượng', 'success');
+                const newQuantity = response.data;
+                setCart(prevCartData => {
+                    if (!prevCartData) {
+                        return null;
+                    }
+                    const itemToUpdate = prevCartData.bookCartItemResponses.find(bookCartItem => bookCartItem.bookCartItemId === item.bookCartItemId);
+                    if (!itemToUpdate) {
+                        return prevCartData;
+                    }
+                    const newTotalQuantity = prevCartData.totalQuantity + 1;
+                    const newRemainingSlots = 5 - newTotalQuantity;
+                    const newCanAdd = newTotalQuantity < 5;
+
+                    return {
+                        ...prevCartData,
+                        bookCartItemResponses: prevCartData.bookCartItemResponses.map(cartItem => {
+                            if (cartItem.bookCartItemId === item.bookCartItemId) {
+                                const updatedCanDecrease = newQuantity > 1;
+                                const updatedCanIncrease =
+                                    newTotalQuantity < 5
+                                    && newQuantity < cartItem.availableQuantity;
+
+                                return {
+                                    ...cartItem,
+                                    requestedQuantity: newQuantity,
+                                    canIncrease: updatedCanIncrease,
+                                    canDecrease: updatedCanDecrease
+                                };
+                            }
+                            if (newTotalQuantity >= 5) {
+                                return {
+                                    ...cartItem,
+                                    canIncrease: false
+                                }
+                            }
+
+                            return cartItem;
+                        }),
+                        totalQuantity: newTotalQuantity,
+                        remainingSlots: newRemainingSlots,
+                        canAddMore: newCanAdd,
+                    };
+                });
+            } else {
+                showSnackbar(response.message || 'Không thể tăng số lượng', 'error');
+            }
+        } catch (error: any) {
+            console.error('Error increasing quantity:', error);
+            showSnackbar(error.response?.data?.message || 'Có lỗi xảy ra', 'error');
+        }
+    };
+
+    const handleDecreaseQuantity = async (item: BookCartItemResponse) => {
+        try {
+            const response = await BookCartItemApi.updateQuantity(item.bookCartItemId, { action: "decrease" });
+            if (response.isSuccess) {
+                showSnackbar('Đã giảm số lượng', 'success');
+                const newQuantity = response.data;
+
+                setCart(prevCartData => {
+                    if (!prevCartData) {
+                        return null;
+                    }
+                    const itemToUpdate = prevCartData.bookCartItemResponses.find(cartItem => cartItem.bookCartItemId === item.bookCartItemId);
+                    if (!itemToUpdate) {
+                        return prevCartData;
+                    }
+                    const newTotalQuantity = prevCartData.totalQuantity - 1;
+                    const newRemainingSlots = 5 - newTotalQuantity;
+                    const newCanAdd = newTotalQuantity < 5;
+                    return {
+                        ...prevCartData,
+                        totalQuantity: newTotalQuantity,
+                        remainingSlots: newRemainingSlots,
+                        canAddMore: newCanAdd,
+                        bookCartItemResponses: prevCartData.bookCartItemResponses.map(cartItem => {
+                            if (cartItem.bookCartItemId === item.bookCartItemId) {
+                                const updatedCanDecrease = newQuantity > 1;
+                                const updatedCanIncrease =
+                                    newQuantity < cartItem.availableQuantity
+                                    && newTotalQuantity < 5;
+
+                                return {
+                                    ...cartItem,
+                                    requestedQuantity: newQuantity,
+                                    canDecrease: updatedCanDecrease,
+                                    canIncrease: updatedCanIncrease
+                                };
+                            }
+
+                            if (prevCartData.totalQuantity === 5 && newTotalQuantity < 5) {
+                                const otherCanIncrease = cartItem.requestedQuantity < cartItem.availableQuantity;
+                                return {
+                                    ...cartItem,
+                                    canIncrease: otherCanIncrease
+                                };
+                            }
+
+                            return cartItem;
+                        }),
+                    };
+                });
+            } else {
+                showSnackbar(response.message || 'Không thể giảm số lượng', 'error');
+            }
+        } catch (error: any) {
+            console.error('Error decreasing quantity:', error);
+            showSnackbar(error.response?.data?.message || 'Có lỗi xảy ra', 'error');
+        }
+    };
+
+    const handleRemoveItem = async (item: BookCartItemResponse) => {
+        if (!window.confirm(`Bạn có chắc muốn xóa "${item.bookTitle}" khỏi giỏ?`)) {
+            return;
+        }
+
+        try {
+            const response = await BookCartItemApi.removeItem(item.bookCartItemId);
+            if (response.isSuccess) {
+                showSnackbar('Đã xóa khỏi giỏ sách', 'success');
+                await fetchCart();
+            } else {
+                showSnackbar(response.message || 'Không thể xóa', 'error');
+            }
+        } catch (error: any) {
+            console.error('Error removing item:', error);
+            showSnackbar(error.response?.data?.message || 'Có lỗi xảy ra', 'error');
+        }
+    };
+
+    const handleClearCart = async (bookCart: BookCartResponse | null) => {
+        try {
+            if (bookCart == null) {
+                showSnackbar('Không tìm thấy giỏ sách', 'error');
                 return;
             }
-        }
-        const bookItemIdToDelete = item.bookItemIds[0];
-        if (!bookItemIdToDelete) {
-            alert('Không tìm thấy bản sao để xóa.');
-            return;
-        }
-        try {
-            const res = await BookCartItem.deleteBookCartItem(bookItemIdToDelete);
-            console.log(bookItemIdToDelete);
-            if (res.isSuccess) {
+            const response = await BookCartItemApi.clearAllBookCartItem(bookCart.bookCartId);
+            if (response.isSuccess) {
+                showSnackbar('Đã xóa tất cả sách khỏi giỏ', 'success');
+                setOpenClearDialog(false);
                 await fetchCart();
             } else {
-                alert(`Lỗi khi xóa: ${res.message}`);
+                showSnackbar(response.message || 'Không thể xóa giỏ', 'error');
             }
-        } catch (error) {
-            alert('Có lỗi xảy ra khi giảm số lượng/xóa sách khỏi giỏ.');
-            console.error(error);
+        } catch (error: any) {
+            console.error('Error clearing cart:', error);
+            showSnackbar(error.response?.data?.message || 'Có lỗi xảy ra', 'error');
         }
     };
 
-    const handleIncreaseQuantity = async (item: BookCartTitleResponse) => {
-        try {
-            const res = await BookCartItem.addBookCartItem(item.bookId);
-            if (res.isSuccess) {
-                await fetchCart();
-            } else {
-                alert(`Lỗi khi thêm: ${res.message}. Có thể tất cả bản sao đã được mượn hoặc giữ.`);
-            }
-        } catch (error) {
-            alert('Có lỗi xảy ra khi tăng số lượng.');
-            console.error(error);
-        }
-    };
-
-    const sortedCartItems = useMemo(() => {
-        const items = [...cartItems];
-        items.sort((a, b) => {
-            const dateA = new Date(a.createAt).getTime();
-            const dateB = new Date(b.createAt).getTime();
-            if (sortOrder === 'oldest') {
-                return dateA - dateB;
-            } else {
-                return dateB - dateA;
-            }
-        });
-        return items;
-    }, [cartItems, sortOrder]);
-
-    const toggleSelect = (item: BookCartTitleResponse) => {
-        setSelectedItems((prev) =>
-            prev.some(i => i.bookId === item.bookId)
-                ? prev.filter(i => i.bookId !== item.bookId)
-                : [...prev, item]
-        );
-    };
-
-    const totalSelectedCopies = useMemo(() => {
-        return selectedItems.reduce((sum, item) => sum + item.quantityBookCart, 0);
-    }, [selectedItems]);
-
-    const allSelectedBookItemIds = useMemo(() => {
-        return selectedItems.flatMap(item => item.bookItemIds);
-    }, [selectedItems]);
-
-    const handleBorrow = async (borrowDays: number) => {
-        if (allSelectedBookItemIds.length === 0) {
-            alert('Bạn chưa chọn sách nào để mượn.');
+    const handleCheckout = async () => {
+        if (duration < 1 || duration > 10) {
+            showSnackbar('Số ngày mượn phải từ 1-10 ngày', 'error');
             return;
         }
 
-        const request: BorrowingRequest = {
-            duration: borrowDays,
-            bookiTemIds: allSelectedBookItemIds,
-        };
-
         try {
-            const res = await Borrowing.createBorrowing(request);
-            if (res.isSuccess) {
-                alert('Mượn sách thành công!');
-                setSelectedItems([]);
-                await fetchCart();
+            const response = await BookCartApi.checkoutBookCartItem({ duration });
+            if (response.isSuccess && response.data) {
+                showSnackbar('Tạo phiếu mượn thành công!', 'success');
+                setOpenCheckoutDialog(false);
+                navigate(`/user/borrowingstatus`);
             } else {
-                alert(`Lỗi: ${res.message}`);
+                showSnackbar(response.message || 'Không thể tạo phiếu mượn', 'error');
             }
-        } catch (err) {
-            alert('Có lỗi xảy ra khi gửi yêu cầu mượn sách.');
-            console.error(err);
+        } catch (error: any) {
+            console.error('Error checkout:', error);
+            showSnackbar(error.response?.data?.message || 'Có lỗi xảy ra', 'error');
         }
     };
-
     return (
         <MainLayoutUser>
             <Box className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
                 <Box className="max-w-6xl mx-auto">
-                    {/* Header Section */}
                     <Paper elevation={0} className="mb-6 p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100">
-                        <Stack direction="row" alignItems="center" spacing={2} className="mb-4">
-                            <Box className="bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl">
-                                <ShoppingCartIcon className="text-white" sx={{ fontSize: 32 }} />
-                            </Box>
-                            <Box>
-                                <Typography variant="h4" className="font-bold text-gray-800">
-                                    Giỏ Sách Của Tôi
-                                </Typography>
-                                <Typography variant="body2" className="text-gray-500">
-                                    Quản lý và mượn sách dễ dàng
-                                </Typography>
-                            </Box>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" className="mb-4">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                                <Box className="bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl">
+                                    <ShoppingCartIcon className="text-white" sx={{ fontSize: 32 }} />
+                                </Box>
+                                <Box>
+                                    <Typography variant="h4" className="font-bold text-gray-800">
+                                        Giỏ Sách Của Tôi
+                                    </Typography>
+                                    <Typography variant="body2" className="text-gray-500">
+                                        Quản lý và mượn sách dễ dàng
+                                    </Typography>
+                                </Box>
+                            </Stack>
+
+                            {cart && cart.bookCartItemResponses.length > 0 && (
+                                <Tooltip title="Xóa tất cả">
+                                    <IconButton
+                                        onClick={() => setOpenClearDialog(true)}
+                                        color="error"
+                                        className="hover:bg-red-50"
+                                    >
+                                        <DeleteSweepIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                         </Stack>
 
-                        {/* Stats và Sort */}
-                        <Stack
-                            direction={{ xs: 'column', sm: 'row' }}
-                            spacing={2}
-                            justifyContent="space-between"
-                            alignItems={{ xs: 'stretch', sm: 'center' }}
-                        >
-                            <Stack direction="row" spacing={2}>
-                                <Chip
-                                    icon={<LocalLibraryIcon />}
-                                    label={`${cartItems.length} tựa sách`}
-                                    color="primary"
-                                    variant="outlined"
-                                    className="font-semibold"
-                                />
-                                {selectedItems.length > 0 && (
+                        {cart && (
+                            <Stack
+                                direction={{ xs: 'column', sm: 'row' }}
+                                spacing={2}
+                                justifyContent="space-between"
+                                alignItems={{ xs: 'stretch', sm: 'center' }}
+                            >
+                                <Stack direction="row" spacing={2} flexWrap="wrap">
+                                    <Chip
+                                        icon={<LocalLibraryIcon />}
+                                        label={`${cart.totalBooks} tựa sách`}
+                                        color="primary"
+                                        variant="outlined"
+                                        className="font-semibold"
+                                    />
                                     <Chip
                                         icon={<CheckCircleIcon />}
-                                        label={`${selectedItems.length} đã chọn`}
+                                        label={`${cart.totalQuantity} quyển`}
                                         color="success"
                                         className="font-semibold"
                                     />
-                                )}
-                            </Stack>
+                                    {!cart.canAddMore && (
+                                        <Chip
+                                            label="Giỏ đã đầy"
+                                            color="error"
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                    )}
+                                </Stack>
 
-                            <FormControl size="small" className="min-w-[180px]">
-                                <InputLabel id="sort-label">
-                                    <Stack direction="row" spacing={1} alignItems="center">
-                                        <SortIcon fontSize="small" />
-                                        <span>Sắp xếp</span>
-                                    </Stack>
-                                </InputLabel>
-                                <Select
-                                    labelId="sort-label"
-                                    value={sortOrder}
-                                    onChange={(e) => setSortOrder(e.target.value as SortOption)}
-                                    label="Sắp xếp"
-                                >
-                                    <MenuItem value="oldest">Cũ nhất trước</MenuItem>
-                                    <MenuItem value="newest">Mới nhất trước</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Stack>
+                                <Box className="text-right">
+                                    <Typography variant="body2" className="text-gray-600">
+                                        Sử dụng: <strong>{cart.totalQuantity}/5</strong> quyển
+                                    </Typography>
+                                    {cart.canAddMore && (
+                                        <Typography variant="caption" className="text-gray-500">
+                                            Còn {cart.remainingSlots} slot
+                                        </Typography>
+                                    )}
+                                </Box>
+                            </Stack>
+                        )}
                     </Paper>
 
-                    {/* Cart Items */}
                     {isLoading ? (
                         <Card className="rounded-2xl shadow-sm">
                             <CardContent>
@@ -224,7 +327,7 @@ const MyBookListPage: React.FC = () => {
                                 </Box>
                             </CardContent>
                         </Card>
-                    ) : sortedCartItems.length === 0 ? (
+                    ) : !cart || cart.bookCartItemResponses.length === 0 ? (
                         <Card className="rounded-2xl shadow-sm">
                             <CardContent>
                                 <Box className="flex flex-col items-center justify-center py-16">
@@ -234,133 +337,137 @@ const MyBookListPage: React.FC = () => {
                                     <Typography variant="h6" className="text-gray-600 mb-2">
                                         Giỏ sách trống
                                     </Typography>
-                                    <Typography className="text-gray-400">
+                                    <Typography className="text-gray-400 mb-4">
                                         Hãy thêm sách vào giỏ để bắt đầu mượn
                                     </Typography>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => navigate(`/user/books`)}
+                                        className="bg-gradient-to-r from-blue-500 to-purple-500"
+                                    >
+                                        Khám phá sách
+                                    </Button>
                                 </Box>
                             </CardContent>
                         </Card>
                     ) : (
                         <Stack spacing={2}>
-                            {sortedCartItems.map((item, index) => {
-                                const isSelected = selectedItems.some(i => i.bookId === item.bookId);
-                                return (
-                                    <Fade in={true} timeout={300 + index * 100} key={item.bookId}>
-                                        <Card
-                                            className={`rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md ${isSelected ? 'ring-2 ring-blue-400 bg-blue-50/30' : ''
-                                                }`}
-                                        >
-                                            <CardContent className="p-4">
-                                                <Stack
-                                                    direction={{ xs: 'column', md: 'row' }}
-                                                    spacing={3}
-                                                    alignItems={{ xs: 'stretch', md: 'center' }}
-                                                >
-                                                    {/* Book Image */}
-                                                    <Box className="relative flex-shrink-0">
-                                                        <img
-                                                            src={item.imageUrls?.[0] || 'placeholder.jpg'}
-                                                            alt={item.bookTitle}
-                                                            className="w-full md:w-28 h-40 md:h-40 object-cover rounded-xl shadow-md"
-                                                        />
-                                                        {isSelected && (
-                                                            <Box className="absolute -top-2 -right-2 bg-blue-500 text-white rounded-full p-1">
-                                                                <CheckCircleIcon fontSize="small" />
-                                                            </Box>
-                                                        )}
-                                                    </Box>
+                            {cart.bookCartItemResponses.map((item, index) => (
+                                <Fade in={true} timeout={300 + index * 100} key={item.bookCartItemId}>
+                                    <Card className="rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md">
+                                        <CardContent className="p-4">
+                                            <Stack
+                                                direction={{ xs: 'column', md: 'row' }}
+                                                spacing={3}
+                                                alignItems={{ xs: 'stretch', md: 'center' }}
+                                            >
+                                                <Box className="relative flex-shrink-0">
+                                                    <img
+                                                        src={item.imageUrl || '/placeholder-book.png'}
+                                                        alt={item.bookTitle}
+                                                        className="w-full md:w-28 h-40 md:h-40 object-cover rounded-xl shadow-md"
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = '/placeholder-book.png';
+                                                        }}
+                                                    />
+                                                </Box>
 
-                                                    {/* Book Info */}
-                                                    <Box className="flex-1 min-w-0">
-                                                        <Typography variant="h6" className="font-bold text-gray-800 mb-2 line-clamp-2">
-                                                            {item.bookTitle}
+                                                <Box className="flex-1 min-w-0">
+                                                    <Typography variant="h6" className="font-bold text-gray-800 mb-2 line-clamp-2">
+                                                        {item.bookTitle}
+                                                    </Typography>
+                                                    <Stack spacing={1}>
+                                                        <Typography variant="body2" className="text-gray-600">
+                                                            <span className="font-semibold">Tác giả:</span> {item.author}
                                                         </Typography>
-                                                        <Stack spacing={1}>
-                                                            <Typography variant="body2" className="text-gray-600">
-                                                                <span className="font-semibold">Tác giả:</span> {item.bookAuthor}
-                                                            </Typography>
-                                                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                                                                <Chip
-                                                                    label={item.bookCategory}
-                                                                    size="small"
-                                                                    variant="outlined"
-                                                                    className="text-xs"
-                                                                />
-                                                                <Chip
-                                                                    label={new Date(item.createAt).toLocaleDateString('vi-VN')}
-                                                                    size="small"
-                                                                    variant="outlined"
-                                                                    className="text-xs"
-                                                                />
-                                                            </Stack>
+                                                        <Typography variant="body2" className="text-gray-600">
+                                                            <span className="font-semibold">NXB:</span> {item.publisher}
+                                                        </Typography>
+                                                        <Stack direction="row" spacing={1} flexWrap="wrap">
+                                                            <Chip
+                                                                label={item.statusText}
+                                                                size="small"
+                                                                color={item.availableQuantity >= item.requestedQuantity ? 'success' : 'warning'}
+                                                                variant="outlined"
+                                                                className="text-xs"
+                                                            />
+                                                            <Chip
+                                                                label={new Date(item.createAt).toLocaleDateString('vi-VN')}
+                                                                size="small"
+                                                                variant="outlined"
+                                                                className="text-xs"
+                                                            />
                                                         </Stack>
-                                                    </Box>
+                                                    </Stack>
+                                                </Box>
 
-                                                    <Stack
-                                                        direction={{ xs: 'row', md: 'column' }}
-                                                        spacing={2}
-                                                        alignItems="center"
-                                                        justifyContent={{ xs: 'space-between', md: 'center' }}
+                                                <Stack
+                                                    direction={{ xs: 'row', md: 'column' }}
+                                                    spacing={2}
+                                                    alignItems="center"
+                                                    justifyContent={{ xs: 'space-between', md: 'center' }}
+                                                >
+                                                    <Paper
+                                                        elevation={0}
+                                                        className="flex items-center border-2 border-gray-200 rounded-full overflow-hidden"
+                                                        sx={{ width: 'fit-content', minWidth: '140px' }}
                                                     >
-                                                        <Paper
-                                                            elevation={0}
-                                                            className="flex items-center border-2 border-gray-200 rounded-full overflow-hidden"
-                                                            sx={{ width: 'fit-content', minWidth: '120px' }}
-                                                        >
-                                                            <Tooltip title={item.quantityBookCart > 1 ? "Giảm số lượng" : "Xóa khỏi giỏ"}>
+                                                        <Tooltip title="Giảm số lượng">
+                                                            <span>
                                                                 <IconButton
                                                                     onClick={() => handleDecreaseQuantity(item)}
                                                                     size="small"
-                                                                    className={item.quantityBookCart > 1 ? "text-blue-600" : "text-red-600"}
+                                                                    disabled={!item.canDecrease}
+                                                                    className="text-blue-600"
                                                                     sx={{ width: 36, height: 36 }}
                                                                 >
-                                                                    {item.quantityBookCart > 1 ? <RemoveIcon /> : <DeleteForeverIcon />}
+                                                                    <RemoveIcon />
                                                                 </IconButton>
-                                                            </Tooltip>
+                                                            </span>
+                                                        </Tooltip>
 
-                                                            <Box className="bg-gray-50 flex items-center justify-center"
-                                                                sx={{ width: 48, height: 36 }}>
-                                                                <Typography className="font-bold text-gray-800">
-                                                                    {item.quantityBookCart}
-                                                                </Typography>
-                                                            </Box>
+                                                        <Box className="bg-gray-50 flex items-center justify-center"
+                                                            sx={{ width: 48, height: 36 }}>
+                                                            <Typography className="font-bold text-gray-800">
+                                                                {item.requestedQuantity}
+                                                            </Typography>
+                                                        </Box>
 
-                                                            <Tooltip title="Thêm bản sao">
+                                                        <Tooltip title="Tăng số lượng">
+                                                            <span>
                                                                 <IconButton
                                                                     onClick={() => handleIncreaseQuantity(item)}
                                                                     size="small"
+                                                                    disabled={!item.canIncrease}
                                                                     className="text-blue-600"
+                                                                    sx={{ width: 36, height: 36 }}
                                                                 >
                                                                     <AddIcon />
                                                                 </IconButton>
-                                                            </Tooltip>
-                                                        </Paper>
-
-                                                        {/* Select Checkbox */}
-                                                        <Tooltip title="Chọn để mượn">
-                                                            <Checkbox
-                                                                checked={isSelected}
-                                                                onChange={() => toggleSelect(item)}
-                                                                icon={<Box className="w-6 h-6 border-2 border-gray-300 rounded-md" />}
-                                                                checkedIcon={
-                                                                    <Box className="w-6 h-6 bg-blue-500 border-2 border-blue-500 rounded-md flex items-center justify-center">
-                                                                        <CheckCircleIcon className="text-white" fontSize="small" />
-                                                                    </Box>
-                                                                }
-                                                            />
+                                                            </span>
                                                         </Tooltip>
-                                                    </Stack>
+                                                    </Paper>
+
+                                                    <Tooltip title="Xóa khỏi giỏ">
+                                                        <IconButton
+                                                            onClick={() => handleRemoveItem(item)}
+                                                            color="error"
+                                                            size="small"
+                                                            className="hover:bg-red-50"
+                                                        >
+                                                            <DeleteForeverIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
                                                 </Stack>
-                                            </CardContent>
-                                        </Card>
-                                    </Fade>
-                                );
-                            })}
+                                            </Stack>
+                                        </CardContent>
+                                    </Card>
+                                </Fade>
+                            ))}
                         </Stack>
                     )}
 
-                    {/* Footer - Borrow Button */}
-                    {cartItems.length > 0 && (
+                    {cart && cart.bookCartItemResponses.length > 0 && (
                         <Paper
                             elevation={4}
                             className="mt-6 p-6 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 text-white sticky bottom-4"
@@ -373,18 +480,18 @@ const MyBookListPage: React.FC = () => {
                             >
                                 <Box>
                                     <Typography variant="body2" className="opacity-90">
-                                        Tổng số bản sao được chọn
+                                        Tổng số quyển sách
                                     </Typography>
                                     <Typography variant="h4" className="font-bold">
-                                        {totalSelectedCopies} cuốn
+                                        {cart.totalQuantity} quyển ({cart.totalBooks} cuốn)
                                     </Typography>
                                 </Box>
 
                                 <Button
                                     variant="contained"
                                     size="large"
-                                    disabled={totalSelectedCopies === 0 || isLoading}
-                                    onClick={() => setOpenDialog(true)}
+                                    disabled={cart.totalQuantity === 0 || isLoading}
+                                    onClick={() => setOpenCheckoutDialog(true)}
                                     className="bg-white text-blue-600 hover:bg-gray-100 rounded-full px-8 py-3 font-bold shadow-lg"
                                     startIcon={<LocalLibraryIcon />}
                                 >
@@ -395,13 +502,10 @@ const MyBookListPage: React.FC = () => {
                     )}
                 </Box>
 
-                {/* Borrow Dialog */}
                 <Dialog
-                    open={openDialog}
-                    onClose={() => setOpenDialog(false)}
-                    PaperProps={{
-                        className: "rounded-2xl"
-                    }}
+                    open={openCheckoutDialog}
+                    onClose={() => setOpenCheckoutDialog(false)}
+                    PaperProps={{ className: "rounded-2xl" }}
                     maxWidth="xs"
                     fullWidth
                 >
@@ -412,6 +516,12 @@ const MyBookListPage: React.FC = () => {
                         </Stack>
                     </DialogTitle>
                     <DialogContent className="mt-4">
+                        {cart && (
+                            <Alert severity="info" className="mb-4">
+                                Bạn đang mượn <strong>{cart.totalQuantity} quyển</strong> sách
+                                (<strong>{cart.totalBooks} cuốn</strong>)
+                            </Alert>
+                        )}
                         <TextField
                             autoFocus
                             margin="dense"
@@ -425,29 +535,60 @@ const MyBookListPage: React.FC = () => {
                                 setDuration(isNaN(value) ? 1 : Math.max(1, Math.min(30, value)));
                             }}
                             inputProps={{ min: 1, max: 30 }}
-                            helperText={`Từ 1-30 ngày • ${totalSelectedCopies} bản sao được chọn`}
+                            helperText="Từ 1-10 ngày"
                         />
                     </DialogContent>
                     <DialogActions className="p-4">
                         <Button
-                            onClick={() => setOpenDialog(false)}
+                            onClick={() => setOpenCheckoutDialog(false)}
                             className="rounded-full"
                         >
                             Hủy
                         </Button>
                         <Button
-                            onClick={async () => {
-                                if (duration < 1 || duration > 30) return;
-                                setOpenDialog(false);
-                                await handleBorrow(duration);
-                            }}
+                            onClick={handleCheckout}
                             variant="contained"
                             className="rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                            disabled={duration < 1 || duration > 30}
                         >
                             Xác Nhận Mượn
                         </Button>
                     </DialogActions>
                 </Dialog>
+
+                <Dialog
+                    open={openClearDialog}
+                    onClose={() => setOpenClearDialog(false)}
+                    PaperProps={{ className: "rounded-2xl" }}
+                >
+                    <DialogTitle>Xóa tất cả sách</DialogTitle>
+                    <DialogContent>
+                        <Typography>
+                            Bạn có chắc muốn xóa tất cả sách khỏi giỏ?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenClearDialog(false)}>Hủy</Button>
+                        <Button variant="contained" color="error" onClick={() => handleClearCart(cart)}>
+                            Xóa tất cả
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={3000}
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                >
+                    <Alert
+                        onClose={() => setSnackbar({ ...snackbar, open: false })}
+                        severity={snackbar.severity}
+                        variant="filled"
+                    >
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
             </Box>
         </MainLayoutUser>
     );
