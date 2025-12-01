@@ -11,5 +11,4 @@ export interface BookItemResponse {
     titleBookChapter: string,
     shelfSectionName: string,
     imageUrl: string[]
-
 }

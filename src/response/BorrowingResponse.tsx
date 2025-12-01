@@ -6,5 +6,6 @@ export interface BorrowingResponse {
     status: string,
     userName: string,
     librarianName: string,
-    replyDate: string
+    replyDate: string,
+    isReminded: boolean
 }

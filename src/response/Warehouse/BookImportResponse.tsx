@@ -8,7 +8,7 @@ export interface BookImportResponse {
     authorName: string,
     publisherName: string,
     yearPublished: number | null,
-    quantity: number | null,
+    quantity: number,
     totalPrice: number | null,
     unitPrice: number | null,
     categoryName: string,
