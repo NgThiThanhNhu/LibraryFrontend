@@ -19,6 +19,10 @@ import type { BorrowingRequest } from "../request/BorrowingRequest";
 import type { ReplyBorrowingRequest } from "../request/ReplyBorrowingRequest";
 import type { BookPickupScheduleRequest } from "../request/BookPickupScheduleRequest";
 import type { FineRequest } from "../request/FineRequest";
+import type { RequestPayment } from "../request/PaymentRequest";
+import type { BookCartRequest } from "../request/BookCartRequest";
+import type { UpdateBookCartItemRequest } from "../request/UpdateBookCartItemRequest";
+import type { CheckoutBookCartRequest } from "../request/CheckoutBookCartRequest";
 
 const axiosConfig = axiosClient();
 
@@ -275,7 +279,6 @@ export const BookFileApi = {
 }
 
 export const BookImportTransactionWarehouseApi = {
-
     getAllBookImportTransaction: async () => {
         const response = await axiosConfig.get(`/api/BookImportTransaction/GetAllBookImportTransaction`)
         return response.data;
@@ -286,17 +289,40 @@ export const BookImportTransactionWarehouseApi = {
     }
 }
 
-export const BookItemApi = {
+/*export const BookItemApi = {
     ChooseBookItem: async (bookId: string) => {
         const response = await axiosConfig.get(`/api/BookItem/ChooseBookItemByBookId/${bookId}`)
         return response
     }
+}*/
+
+export const BookCartApi = {
+    createCart: async (data: BookCartRequest) => {
+        const response = await axiosConfig.post(`/api/BookCart/createCart`, data);
+        return response.data;
+    },
+    getBookCart: async () => {
+        const response = await axiosConfig.get(`/api/BookCart/GetBookCartActive`);
+        return response.data;
+    },
+    checkoutBookCartItem: async (data: CheckoutBookCartRequest) => {
+        const response = await axiosConfig.post(`/api/BookCart/checkout`, data);
+        return response.data;
+    }
 }
 
-export const BookCartItem = {
-    GetAllBookCartOfUser: async () => {
-        const response = await axiosConfig.get(`/api/BookCartItem/getAllBookCartOfUser`)
-        return response
+export const BookCartItemApi = {
+    updateQuantity: async (bookCartItemId: string, data: UpdateBookCartItemRequest) => {
+        const response = await axiosConfig.put(`/api/BookCartItem/${bookCartItemId}/quantity`, data);
+        return response.data
+    },
+    removeItem: async (bookCartItemId: string) => {
+        const response = await axiosConfig.delete(`/api/BookCartItem/bookCartItem/${bookCartItemId}`);
+        return response.data;
+    },
+    clearAllBookCartItem: async (bookCartId: string) => {
+        const response = await axiosConfig.delete(`/api/BookCartItem/clear/${bookCartId}`);
+        return response.data;
     }
 }
 
@@ -360,6 +386,21 @@ export const FineApi = {
     createFine: async (borrowingDetailId: string, data: FineRequest[]) => {
         const response = await axiosConfig.post(`/api/Fine/createFine?borrowingDetailId=${borrowingDetailId}`, data)
         return response.data
+    }
+}
+
+export const PaymentApi = {
+    createPayment: async (data: RequestPayment) => {
+        const response = await axiosConfig.post(`/api/Payment/create-vnpayment`, data);
+        return response.data;
+    },
+    paymentReturn: async (params: any) => {
+        const response = await axiosConfig.get(`/api/Payment/ReturnUrl`, { params });
+        return response;
+    },
+    createCashPayment: async (data: RequestPayment) => {
+        const response = await axiosConfig.post(`/api/Payment/create-cashpayment`, data);
+        return response.data;
     }
 }
 
