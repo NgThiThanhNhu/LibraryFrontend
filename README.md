@@ -1,54 +1,44 @@
-# React + TypeScript + Vite
+# Frontend Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Technologies Used
+The frontend of this project is built with modern web technologies to ensure high performance, clean architecture, and an excellent user experience.
+* **ReactJS** – Component-based UI library for building fast and interactive interfaces.
+* **TypeScript** – Strong typing for better maintainability and scalability.
+* **Vite** – Next‑generation build tool with lightning‑fast development and optimized production build.
+* **TailwindCSS** – Utility‑first CSS framework for rapid UI development.
+* **Custom CSS** – Additional styling to achieve fine‑tuned and unique UI elements.
+* **Material UI (MUI)** – A powerful UI component library with plenty of modern components and theme customization.
 
-Currently, two official plugins are available:
+## UI & Styling
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* TailwindCSS for responsive and utility‑driven styling.
+* Custom CSS for specific UI cases.
+* Material UI components where enhanced UX is required.
 
-## Expanding the ESLint configuration
+## React + TypeScript + Vite Setup
+* Supports fast refresh for a smooth development experience.
+* Efficient module handling and quick server startup.
+* TypeScript improves code reliability and reduces bugs.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+To install dependencies:
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+To start the development server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+## Main Libraries & Tools
+
+* **React Router** for navigation
+* **Axios or Fetch API** for backend communication
+* **MUI** for ready‑made components
+* **TailwindCSS** for styling
+* **Vite** for building and bundling
+
