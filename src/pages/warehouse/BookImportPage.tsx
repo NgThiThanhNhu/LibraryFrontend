@@ -169,7 +169,6 @@ export const BookImportPage = () => {
     const [getAllBookImport, setGetAllBookImport] = useState<BookImportResponse[]>([])
     useEffect(() => {
         const fetchData = async () => {
-
             try {
                 const response = await BookImportWarehouseApi.getAllBookImport();
                 console.log(response);
@@ -178,7 +177,6 @@ export const BookImportPage = () => {
                 alert('Không tải được dữ liệu lên' + error);
             }
         };
-
         fetchData();
         setReload(false); // tắt reload sau khi tải xong
 
@@ -206,22 +204,6 @@ export const BookImportPage = () => {
             alert("Vui lòng điền id cần tìm!");
             return;
         }
-
-        // try {
-        //     const response = await BookImportWarehouseApi.getBookImportById(bookImportId);
-        //     console.log(response);
-
-        //     if (response.data.data.id == bookImportId) {
-        //         alert('Lấy dữ liệu thành công' + response);
-        //         setBookImportGetById(response.data.data)
-        //         setBox(true);
-
-        //     } else {
-        //         console.error('Id không tồn tại');
-        //     }
-        // } catch (error) {
-        //     alert('Id không tồn tại' + error)
-        // }
     }
 
     //delete
