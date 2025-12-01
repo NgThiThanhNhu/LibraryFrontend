@@ -1,5 +1,5 @@
-// layout/mainLayout/MainLayoutGuest.tsx
 import React from "react";
+import { Box } from "@mui/material";
 import Footer from "../Footer";
 import HeaderGuest from "../headers/HeaderGuest";
 
@@ -9,11 +9,30 @@ type Props = {
 
 const MainLayoutGuest: React.FC<Props> = ({ children }) => {
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50">
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100vh',
+                bgcolor: 'grey.50',
+            }}
+        >
             <HeaderGuest />
-            <main className="flex-1">{children}</main>
+
+            <Box
+                component="main"
+                sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                }}
+            >
+                {children}
+            </Box>
+
             <Footer />
-        </div>
+        </Box>
     );
 };
 
