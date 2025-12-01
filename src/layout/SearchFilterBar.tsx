@@ -8,7 +8,7 @@ interface SearchFilterBarProps {
     onFilterStatusChange: (value: string) => void;
 }
 
-const statusOptions = ['Tất cả', 'Đã trả', 'Chưa trả', 'Trễ hạn'];
+const statusOptions = ['Tất cả', 'Đã trả', 'Đang Mượn', 'Đã quá hạn', 'Chờ Duyệt', 'Đã Duyệt', 'Đã Hẹn Lịch'];
 
 const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     searchText,
