@@ -41,7 +41,6 @@ export default function BookImportTable({ data, reload, onSelectionChange
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[5, 10]}
                 checkboxSelection
-
                 onRowSelectionModelChange={(selection) => {
                     const stringIds = Array.from(selection.ids).map((id) => String(id));
                     onSelectionChange(stringIds);

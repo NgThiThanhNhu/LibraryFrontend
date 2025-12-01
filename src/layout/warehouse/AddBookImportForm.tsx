@@ -12,7 +12,6 @@ type Props = {
     dialogAdd: boolean,
     onCloseDialog: () => void,
     bookImport: BookImportRequest,
-
     onNewChange: (field: keyof BookImportRequest, value: string) => void,
     PublisherList: PublisherResponse[],
     AuthorList: AuthorResponse[],
@@ -123,10 +122,13 @@ export default function AddBookImportForm({ dialogAdd, onCloseDialog, PublisherL
                         <TextField className="bg-white" fullWidth value={bookImport.quantity} onChange={(e) => onNewChange("quantity", e.target.value)}></TextField>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                        <Typography sx={{ width: 300 }}>Mô tả sách</Typography>
+                        <TextField fullWidth placeholder='Nhập mô tả sách' value={bookImport.description} onChange={(e) => onNewChange("description", e.target.value)}></TextField>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                         <Typography sx={{ width: 300 }}>Điền giá tiền mỗi cuốn</Typography>
                         <TextField className="bg-white" fullWidth value={bookImport.unitPrice} onChange={(e) => onNewChange("unitPrice", e.target.value)}></TextField>
                     </Box>
-
                     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
                         <Button color="primary" onClick={handleBtnAdd}>Lưu</Button>
                         <Button color='error' onClick={onCloseDialog}>Hủy</Button>
