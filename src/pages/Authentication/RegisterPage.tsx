@@ -37,27 +37,28 @@ export const RegisterPage = () => {
 
 
 
-    const onhandleRegister = async () => {
+    const onhandleRegister = async (): Promise<boolean> => {
         try {
             if (!register.email.trim()) {
-                alert('email không được để trống!')
-                return
+                alert('email không được để trống!');
+                return false;
             } else if (!register.password.trim()) {
-                alert('password không được để trống!')
-                return
+                alert('password không được để trống!');
+                return false;
             }
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(register.email)) {
                 alert("Email không hợp lệ!");
-                return;
+                return false;
             }
+
             let hasError = false;
             const newError = { password: "", confirmPassword: "" };
 
             if (register.password.length < 6) {
                 newError.password = "Mật khẩu phải ít nhất 6 ký tự";
                 hasError = true;
-
             }
 
             if (confirmPassword !== register.password) {
@@ -66,25 +67,26 @@ export const RegisterPage = () => {
             }
 
             setError(newError);
-            if (!hasError) {
-                const response = await Authetication.register(register);
+            if (hasError) return false;
 
-                console.log(response)
-                if (!response.isSuccess && response.message.includes("tài khoản")) {
-                    setUsernameError("Tài khoản không tồn tại")
-                    return
-                } else if (!response.isSuccess && response.message.includes("Mật khẩu")) {
-                    setPasswordError("Mật khẩu không đúng")
-                    return
-                }
+            const response = await Authetication.register(register);
 
-
+            if (!response.isSuccess && response.message.includes("tài khoản")) {
+                setUsernameError("Tài khoản không tồn tại");
+                return false;
+            } else if (!response.isSuccess && response.message.includes("Mật khẩu")) {
+                setPasswordError("Mật khẩu không đúng");
+                return false;
             }
+            return true;
+
         } catch (error) {
             alert('Đăng ký thất bại!' + error);
-            console.log(error)
+            console.log(error);
+            return false;
         }
-    }
+    };
+
     const [dialogOTP, setDialogOTP] = useState<boolean>(false)
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
@@ -160,10 +162,6 @@ export const RegisterPage = () => {
                     backgroundImage: `url(${loginBg})`,
                 }}
             >
-
-
-
-                {/* Form đăng nhập */}
                 <Paper
                     elevation={6}
                     sx={{
@@ -179,7 +177,6 @@ export const RegisterPage = () => {
                     <Typography variant="h4" align="center" gutterBottom>
                         Thư viện điện tử
                     </Typography>
-
                     <Box sx={{ mb: 3 }}>
                         <Typography sx={{ mb: 1 }}>Email Address</Typography>
                         <TextField
@@ -202,7 +199,6 @@ export const RegisterPage = () => {
                             helperText={usernameError}
                         />
                     </Box>
-
                     <Box sx={{ mb: 3 }}>
                         <Typography sx={{ mb: 1 }}>Password</Typography>
                         <TextField
@@ -249,10 +245,16 @@ export const RegisterPage = () => {
                     </Box>
                     <div>
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button variant="contained" color="primary" onClick={() => {
-                                onhandleRegister();
-                                openDialog();
-                            }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={async () => {
+                                    const success = await onhandleRegister();
+                                    if (success) {
+                                        openDialog();
+                                    }
+                                }}
+                            >
                                 Đăng ký
                             </Button>
                             <Dialog open={dialogOTP} onClose={() => { setDialogOTP(false) }}>
