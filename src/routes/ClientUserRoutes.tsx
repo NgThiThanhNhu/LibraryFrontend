@@ -8,11 +8,6 @@ import BorrowingStatusPage from "../pages/BorrowingStatusPage";
 import { BookDetailPage } from "../pages/BookDetailPage";
 import { UserRoute } from "../route/UserRoute";
 
-
-
-
-
-
 export const ClientUserRoutes = () => {
     return (
         <Routes>

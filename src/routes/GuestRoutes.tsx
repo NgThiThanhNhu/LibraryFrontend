@@ -1,11 +1,14 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../pages/HomePage";
-import { UserRoute } from "../route/UserRoute";
+import Cookies from "js-cookie";
 
 export const GuestRoutes = () => {
+    const token = Cookies.get("jwtToken");
     return (
         <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={
+                token ? <Navigate to="/user/books" replace /> : <HomePage />
+            } />
         </Routes>
     );
 };

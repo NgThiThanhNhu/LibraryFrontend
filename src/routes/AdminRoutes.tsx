@@ -20,6 +20,7 @@ import { ShelfSectionPage } from "../pages/warehouse/ShelfSectionPage"
 import { BookImportPage } from "../pages/warehouse/BookImportPage"
 import { BookFilePage } from "../pages/BookFilePage"
 import { BookImportTransactionPage } from "../pages/warehouse/BookImportTransaction"
+import PaymentReturn from "../pages/PaymentReturn"
 
 
 export const AdminRoutes = () => {
@@ -42,6 +43,7 @@ export const AdminRoutes = () => {
             <Route path="/borrow-manage" element={<AdminRoute><BorrowAndManageWrapper /></AdminRoute>} />
             <Route path="/bookexporthistory" element={<AdminRoute><ExportHistoryPage /></AdminRoute>} />
             <Route path="/manageusers" element={<AdminRoute><ManageUsers /></AdminRoute>} />
+            <Route path="/ReturnUrl" element={<AdminRoute><PaymentReturn /></AdminRoute>} />
         </Routes>
     )
 }
