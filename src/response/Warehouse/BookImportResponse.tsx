@@ -17,5 +17,4 @@ export interface BookImportResponse {
     slug: string,
     bookFileId: string[],
     imageUrls: string[],
-    fileUrls: string[]
 }

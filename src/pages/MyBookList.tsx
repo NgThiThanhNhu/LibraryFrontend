@@ -46,9 +46,8 @@ const MyBookListPage: React.FC = () => {
                 setCart(null);
                 showSnackbar(response.message || 'Không thể tải giỏ sách', 'error');
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error('Error fetching cart:', error);
-            showSnackbar('Có lỗi khi tải giỏ sách', 'error');
             setCart(null);
         } finally {
             setIsLoading(false);
