@@ -23,6 +23,9 @@ import type { RequestPayment } from "../request/PaymentRequest";
 import type { BookCartRequest } from "../request/BookCartRequest";
 import type { UpdateBookCartItemRequest } from "../request/UpdateBookCartItemRequest";
 import type { CheckoutBookCartRequest } from "../request/CheckoutBookCartRequest";
+import type { UserBookIteractionRequest } from "../request/UserBookInteractionRequest";
+import type { UserReadingSessionRequest } from "../request/UserReadingSessionRequest";
+import type { UserReadingSessionUpdateRequest } from "../request/UserReadingSessionUpdateRequest";
 
 const axiosConfig = axiosClient();
 
@@ -275,6 +278,10 @@ export const BookFileApi = {
             }
         });
         return response.data;
+    },
+    getPdfFile: async (bookFileId: string) => {
+        const response = await axiosConfig.get(`/api/BookFile/pdf/${bookFileId}`);
+        return response.data;
     }
 }
 
@@ -400,6 +407,32 @@ export const PaymentApi = {
     },
     createCashPayment: async (data: RequestPayment) => {
         const response = await axiosConfig.post(`/api/Payment/create-cashpayment`, data);
+        return response.data;
+    }
+}
+
+export const UserBookIteractionApi = {
+    createCommnet: async (data: UserBookIteractionRequest) => {
+        const response = await axiosConfig.post(`/api/UserBookInteraction/createComment`, data);
+        return response.data;
+    },
+    getListComment: async (BookId: string) => {
+        const response = await axiosConfig.get(`/api/UserBookInteraction/getListComment/${BookId}`);
+        return response.data;
+    }
+}
+
+export const UserReadingSessionApi = {
+    createReadingSession: async (data: UserReadingSessionRequest) => {
+        const response = await axiosConfig.post(`/api/UserReadingSession/createReadingSession`, data);
+        return response.data;
+    },
+    updateReadingSession: async (sessionId: string, data: UserReadingSessionUpdateRequest) => {
+        const response = await axiosConfig.post(`/api/UserReadingSession/updateReadingSession/${sessionId}`, data);
+        return response.data;
+    },
+    getLastPosition: async (bookId: string) => {
+        const response = await axiosConfig.get(`/api/UserReadingSession/book/${bookId}/last-position`);
         return response.data;
     }
 }
