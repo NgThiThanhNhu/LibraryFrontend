@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { BookImportResponse } from "../response/Warehouse/BookImportResponse"
-import { BookImportWarehouseApi } from "../apis"
+import { BookImportWarehouseApi, UserBookIteractionApi } from "../apis"
 import MainLayoutUser from "../layout/mainLayout/MainLayoutUser"
 import {
     Box,
@@ -19,6 +19,13 @@ import {
     Link,
     alpha,
     Grid,
+    TextField,
+    Card,
+    CardContent,
+    Stack,
+    CircularProgress,
+    Snackbar,
+    Alert,
 } from "@mui/material"
 import BookCard from "../layout/BookCard"
 import { useParams, useNavigate } from "react-router-dom"
@@ -35,7 +42,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import InventoryIcon from '@mui/icons-material/Inventory';
-
+import SendIcon from '@mui/icons-material/Send';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import type { UserBookInteractionResponse } from "../response/UserBookIteractionResponse"
+import type { UserBookIteractionRequest } from "../request/UserBookInteractionRequest"
+import { Details } from "@mui/icons-material"
 
 export const BookDetailPage = () => {
     const initialBookDetail: BookImportResponse = {
@@ -57,7 +68,6 @@ export const BookDetailPage = () => {
         slug: " ",
         bookFileId: [],
         imageUrls: [],
-        fileUrls: []
     }
 
     const { slug } = useParams();
@@ -69,12 +79,95 @@ export const BookDetailPage = () => {
     const [selectedTab, setSelectedTab] = useState(0);
     const [relatedBooks, setRelatedBooks] = useState<BookImportResponse[]>([]);
 
+    const [reviews, setReviews] = useState<UserBookInteractionResponse[]>([]);
+    const [newRating, setNewRating] = useState<number>(0);
+    const [newReviewText, setNewReviewText] = useState<string>("");
+    const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+    const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" as "success" | "error" });
+
     const onHandleReadOnline = (bookDetail: BookImportResponse) => {
-        if (!bookDetail.fileUrls || bookDetail.fileUrls.length === 0) {
-            alert("Sách này chưa có file đọc online!");
+        if (!bookDetail.imageUrls || bookDetail.imageUrls.length === 0) {
+            setSnackbar({
+                open: true,
+                message: "Sách này chưa có ảnh bìa!",
+                severity: "error"
+            });
             return;
         }
-        window.open(bookDetail.fileUrls[0], "_blank");
+        navigate(`/user/read/${bookDetail.id}`, {
+            state: {
+                bookTitle: bookDetail.title,
+                bookFileId: bookDetail.bookFileId
+            }
+        })
+        // window.open(bookDetail.fileUrls[0], '_blank');
+    };
+    const fetchReviews = async (bookId: string) => {
+        setIsLoadingReviews(true);
+        try {
+            const response = await UserBookIteractionApi.getListComment(bookId);
+            if (response.isSuccess) {
+                setReviews(response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+        } finally {
+            setIsLoadingReviews(false);
+        }
+    };
+
+    const handleSubmitReview = async () => {
+        if (newRating === 0) {
+            setSnackbar({ open: true, message: "Vui lòng chọn số sao đánh giá!", severity: "error" });
+            return;
+        }
+
+        if (newReviewText.trim().length < 10) {
+            setSnackbar({ open: true, message: "Bình luận phải có ít nhất 10 ký tự!", severity: "error" });
+            return;
+        }
+
+        setIsSubmittingReview(true);
+        try {
+            const interactionRequest: UserBookIteractionRequest = {
+                bookId: bookDetail.id,
+                interactionType: 7,
+                rating: newRating,
+                reviewText: newReviewText.trim()
+            };
+
+            const response = await UserBookIteractionApi.createCommnet(interactionRequest);
+            console.log(response)
+            if (response.isSuccess) {
+                setReviews([response.data, ...reviews]);
+                setNewRating(0);
+                setNewReviewText("");
+                setSnackbar({ open: true, message: "Đánh giá của bạn đã được gửi thành công!", severity: "success" });
+            }
+        } catch (error) {
+            console.error("Error submitting review:", error);
+            setSnackbar({ open: true, message: "Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại!", severity: "error" });
+        } finally {
+            setIsSubmittingReview(false);
+        }
+    };
+
+    const formatDate = (dateString: Date) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - date.getTime());
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) return "Hôm nay";
+        if (diffDays === 1) return "Hôm qua";
+        if (diffDays < 7) return `${diffDays} ngày trước`;
+
+        return date.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     };
 
     useEffect(() => {
@@ -87,7 +180,10 @@ export const BookDetailPage = () => {
                 }
                 setBookDetail(response.data.data)
 
-                // Fetch related books
+                if (response.data.data.id) {
+                    fetchReviews(response.data.data.id);
+                }
+
                 const allBooksResponse = await BookImportWarehouseApi.getAllBookImport();
                 setRelatedBooks(allBooksResponse.data.slice(0, 4));
             } catch (error) {
@@ -99,7 +195,6 @@ export const BookDetailPage = () => {
 
     return (
         <MainLayoutUser>
-            {/* Breadcrumbs */}
             <Box
                 sx={{
                     bgcolor: 'white',
@@ -287,12 +382,17 @@ export const BookDetailPage = () => {
 
                             {/* Rating */}
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                                <Rating value={4.5} precision={0.5} readOnly size="large" />
+                                <Rating
+                                    value={reviews.length > 0 ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length : 0}
+                                    precision={0.5}
+                                    readOnly
+                                    size="large"
+                                />
                                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                                    4.5
+                                    {reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : '0.0'}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    (128 đánh giá)
+                                    ({reviews.length} đánh giá)
                                 </Typography>
                             </Box>
 
@@ -431,7 +531,6 @@ export const BookDetailPage = () => {
 
                             <Divider sx={{ my: 3 }} />
 
-                            {/* Action Buttons */}
                             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                                 <ChooseBookItem bookId={bookDetail.id} />
                                 <Button
@@ -471,7 +570,6 @@ export const BookDetailPage = () => {
                         </Box>
                     </Box>
 
-                    {/* Tabs Section */}
                     <Box sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                         <Tabs
                             value={selectedTab}
@@ -487,7 +585,7 @@ export const BookDetailPage = () => {
                         >
                             <Tab label="📖 Mô tả" />
                             <Tab label="📋 Chi tiết" />
-                            <Tab label="⭐ Đánh giá" />
+                            <Tab label={`⭐ Đánh giá (${reviews.length})`} />
                         </Tabs>
 
                         <Box sx={{ p: 4 }}>
@@ -509,6 +607,7 @@ export const BookDetailPage = () => {
                                     </Typography>
                                 </Box>
                             )}
+
                             {selectedTab === 1 && (
                                 <Box>
                                     <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
@@ -556,14 +655,180 @@ export const BookDetailPage = () => {
                                     </Box>
                                 </Box>
                             )}
+
                             {selectedTab === 2 && (
-                                <Box sx={{ textAlign: 'center', py: 4 }}>
-                                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+                                <Box>
+                                    {/* Write Review Section */}
+                                    <Paper
+                                        elevation={0}
+                                        sx={{
+                                            p: 3,
+                                            mb: 4,
+                                            borderRadius: 3,
+                                            bgcolor: alpha('#667eea', 0.03),
+                                            border: '2px solid',
+                                            borderColor: alpha('#667eea', 0.1),
+                                        }}
+                                    >
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                                            <RateReviewIcon sx={{ color: 'primary.main' }} />
+                                            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                                Viết đánh giá của bạn
+                                            </Typography>
+                                        </Box>
+
+                                        <Stack spacing={3}>
+                                            <Box>
+                                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
+                                                    Đánh giá sao *
+                                                </Typography>
+                                                <Rating
+                                                    value={newRating}
+                                                    onChange={(event, newValue) => setNewRating(newValue || 0)}
+                                                    size="large"
+                                                    sx={{
+                                                        '& .MuiRating-iconFilled': {
+                                                            color: '#ffc107',
+                                                        },
+                                                        '& .MuiRating-iconHover': {
+                                                            color: '#ffb400',
+                                                        }
+                                                    }}
+                                                />
+                                            </Box>
+
+                                            {/* Review Text Input */}
+                                            <Box>
+                                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
+                                                    Nhận xét của bạn *
+                                                </Typography>
+                                                <TextField
+                                                    fullWidth
+                                                    multiline
+                                                    rows={4}
+                                                    placeholder="Chia sẻ cảm nhận của bạn về cuốn sách này... (Tối thiểu 10 ký tự)"
+                                                    value={newReviewText}
+                                                    onChange={(e) => setNewReviewText(e.target.value)}
+                                                    sx={{
+                                                        '& .MuiOutlinedInput-root': {
+                                                            borderRadius: 2,
+                                                            bgcolor: 'white',
+                                                        }
+                                                    }}
+                                                />
+                                                <Typography
+                                                    variant="caption"
+                                                    color={newReviewText.length < 10 ? 'error.main' : 'text.secondary'}
+                                                    sx={{ mt: 0.5, display: 'block' }}
+                                                >
+                                                    {newReviewText.length}/500 ký tự
+                                                </Typography>
+                                            </Box>
+
+                                            {/* Submit Button */}
+                                            <Button
+                                                variant="contained"
+                                                size="large"
+                                                startIcon={isSubmittingReview ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
+                                                onClick={handleSubmitReview}
+                                                disabled={isSubmittingReview}
+                                                sx={{
+                                                    borderRadius: 2,
+                                                    textTransform: 'none',
+                                                    fontWeight: 700,
+                                                    px: 4,
+                                                    py: 1.5,
+                                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                    '&:hover': {
+                                                        background: 'linear-gradient(135deg, #5568d3 0%, #63408a 100%)',
+                                                        transform: 'translateY(-2px)',
+                                                        boxShadow: 4,
+                                                    },
+                                                    '&:disabled': {
+                                                        background: 'grey.300',
+                                                    }
+                                                }}
+                                            >
+                                                {isSubmittingReview ? 'Đang gửi...' : 'Gửi đánh giá'}
+                                            </Button>
+                                        </Stack>
+                                    </Paper>
+
+                                    {/* Reviews List */}
+                                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
                                         Đánh giá từ độc giả
                                     </Typography>
-                                    <Typography color="text.secondary">
-                                        Chưa có đánh giá nào cho cuốn sách này.
-                                    </Typography>
+
+                                    {isLoadingReviews ? (
+                                        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+                                            <CircularProgress />
+                                        </Box>
+                                    ) : reviews.length === 0 ? (
+                                        <Box sx={{ textAlign: 'center', py: 6 }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: 'text.secondary' }}>
+                                                Chưa có đánh giá nào
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Hãy là người đầu tiên đánh giá cuốn sách này!
+                                            </Typography>
+                                        </Box>
+                                    ) : (
+                                        <Stack spacing={2}>
+                                            {reviews.map((review) => (
+                                                <Card
+                                                    key={review.id}
+                                                    elevation={0}
+                                                    sx={{
+                                                        borderRadius: 3,
+                                                        border: '1px solid',
+                                                        borderColor: 'divider',
+                                                        transition: 'all 0.3s ease',
+                                                        '&:hover': {
+                                                            borderColor: 'primary.main',
+                                                            boxShadow: 2,
+                                                            transform: 'translateX(4px)',
+                                                        }
+                                                    }}
+                                                >
+                                                    <CardContent sx={{ p: 3 }}>
+                                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
+                                                            <Avatar
+                                                                sx={{
+                                                                    width: 48,
+                                                                    height: 48,
+                                                                    bgcolor: 'primary.main',
+                                                                    fontWeight: 700,
+                                                                    fontSize: '1.2rem'
+                                                                }}
+                                                            >
+                                                                {review.userName.charAt(0).toUpperCase()}
+                                                            </Avatar>
+                                                            <Box sx={{ flex: 1 }}>
+                                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                                                        {review.userName}
+                                                                    </Typography>
+                                                                    <Typography variant="caption" color="text.secondary">
+                                                                        {formatDate(review.createAt)}
+                                                                    </Typography>
+                                                                </Box>
+                                                                <Rating value={review.rating} readOnly size="small" sx={{ mb: 1.5 }} />
+                                                                <Typography
+                                                                    variant="body2"
+                                                                    sx={{
+                                                                        lineHeight: 1.7,
+                                                                        color: 'text.secondary',
+                                                                    }}
+                                                                >
+                                                                    {review.reviewText}
+                                                                </Typography>
+                                                            </Box>
+                                                        </Box>
+                                                    </CardContent>
+                                                </Card>
+                                            ))}
+                                        </Stack>
+                                    )}
                                 </Box>
                             )}
                         </Box>
@@ -591,6 +856,22 @@ export const BookDetailPage = () => {
                     </Box>
                 </Box>
             </Container>
+
+            {/* Snackbar for notifications */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={4000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </MainLayoutUser>
     )
 }
