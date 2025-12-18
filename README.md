@@ -41,4 +41,6 @@ npm run dev
 * **MUI** for ready‑made components
 * **TailwindCSS** for styling
 * **Vite** for building and bundling
+### **Demo**
+- **Video demo:** [Xem tại đây](https://youtu.be/3AIUCPBpld0)
 
